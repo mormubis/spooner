@@ -1,8 +1,7 @@
 import Form from './Form';
-import Input from './Input/index';
 
-const Select = Input.extend.attrs({ type: 'select' })``;
+export { Input, Checkbox, Radio, Select, Textarea } from './Input/';
 
-export { Form, Input, Select };
+export { Form };
 
 export default Form;
