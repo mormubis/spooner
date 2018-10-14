@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import withField from './with/field';
 
-class Text extends Component {
+class Input extends Component {
   static defaultProps = {
     onBlur() {},
     onChange() {},
@@ -49,4 +49,4 @@ class Text extends Component {
   }
 }
 
-export default withField('')(Text);
+export default withField('')(Input);
