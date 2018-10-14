@@ -1,0 +1,41 @@
+{
+  "author": "Adrian de la Rosa <adrian@joinedapp.com>",
+  "dependencies": {
+    "hoist-non-react-statics": "^3.0.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.5.2",
+    "recompose": "^0.30.0",
+    "underscore": "^1.9.1",
+    "validate.js": "^0.12.0"
+  },
+  "description": "Forms",
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "eslint": "^5.6.1",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-react": "^7.11.1",
+    "husky": "^1.1.1",
+    "prettier": "^1.14.3",
+    "uglifyjs-webpack-plugin": "^2.0.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
+  },
+  "keywords": [
+    "forms"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "name": "spooner",
+  "peerDependencies": {
+    "react": "^16.5.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}
