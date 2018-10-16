@@ -1,6 +1,6 @@
 import React, { createContext, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { compose, isEqual } from 'underscore';
+import _ from 'underscore';
 
 import { validate } from './validation';
 
@@ -17,6 +17,7 @@ export { Consumer };
 
 export class Form extends PureComponent {
   static defaultProps = {
+    error: {},
     onChange() {},
     onErrorChanged() {},
     onInvalid() {},
@@ -41,12 +42,12 @@ export class Form extends PureComponent {
   };
 
   validate(value) {
-    const { constraint, onErrorChange, onInvalid } = this.props;
+    const { constraint, onErrorChanged, onInvalid } = this.props;
 
     const error = validate(value, constraint);
     const isValid = Object.keys(error).length === 0;
 
-    onErrorChange(error);
+    onErrorChanged(error);
 
     if (!isValid) {
       onInvalid(error);
@@ -63,7 +64,7 @@ export class Form extends PureComponent {
     const error = { ...prevError };
     delete error[name];
 
-    if (!isEqual(error, prevError)) {
+    if (!_.isEqual(error, prevError)) {
       onErrorChanged(error);
     }
   }
@@ -82,6 +83,7 @@ export class Form extends PureComponent {
     const { value: before } = this.props;
     const after = { ...before, [name]: value };
 
+    console.log('set', name, JSON.stringify(value));
     this.handleChange(name, after, before);
   };
 
@@ -90,6 +92,7 @@ export class Form extends PureComponent {
     const after = { ...before };
     delete after[name];
 
+    console.log('unset', name);
     this.handleChange(name, after, before);
   };
 
@@ -110,7 +113,7 @@ export class Form extends PureComponent {
   }
 }
 
-export default compose(
+export default _.compose(
   withControlledProp('error'),
   withControlledProp('value', 'onChange'),
 )(Form);

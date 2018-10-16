@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import PropTypes from 'prop-types';
-import { compose, isEqual } from 'underscore';
+import _ from 'underscore';
 
 import { Consumer } from './Form';
 import withControlledProp from './with/controlledProp';
@@ -66,14 +66,15 @@ export class Field extends PureComponent {
   componentDidMount() {
     const { name, set, value } = this.props;
 
-    set(name, value, undefined);
+    console.log('set - field', name, value);
+    set(name, value);
   }
 
   componentDidUpdate(prevProps) {
-    const { name, set, value } = this.props;
+    const { name, onChange, value } = this.props;
 
-    if (!isEqual(value, prevProps.value)) {
-      set(name, value, prevProps.value);
+    if (!_.isEqual(value, prevProps.value)) {
+      onChange(name, value, prevProps.value);
     }
   }
 
@@ -83,14 +84,20 @@ export class Field extends PureComponent {
     unset(name);
   }
 
-  render() {
-    const { children, error, onChange, value } = this.props;
+  handleChange = (value) => {
+    const { name, set } = this.props;
 
-    return children({ error, onChange, value });
+    set(name, value);
+  };
+
+  render() {
+    const { children, error, value } = this.props;
+
+    return children({ error, onChange: this.handleChange, value });
   }
 }
 
-export default compose(
+export default _.compose(
   withinForm,
   withControlledProp('value', 'onChange'),
 )(Field);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import withField from './with/field';
+import withField from '../with/field';
 
 class Input extends Component {
   static defaultProps = {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import PropTypes from 'prop-types';
-import { isEqual } from 'underscore';
+import _ from 'underscore';
 
 function capitalize(propName) {
   return `${propName.charAt(0).toUpperCase()}${propName.slice(1)}`;
@@ -45,14 +45,14 @@ export function withControlledProp(
         if (this.isControlled) {
           const { [propName]: before } = this.props;
 
-          if (after instanceof File || !isEqual(after, before)) {
+          if (after instanceof File || !_.isEqual(after, before)) {
             onChange(after, before);
           }
         } else {
           this.setState(prevState => {
             const { [propName]: before } = prevState;
 
-            if (after instanceof File || !isEqual(after, before)) {
+            if (after instanceof File || !_.isEqual(after, before)) {
               onChange(after, before);
 
               return { [propName]: after };

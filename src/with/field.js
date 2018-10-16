@@ -2,15 +2,14 @@ import React, { PureComponent } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import PropTypes from 'prop-types';
 
-import Field from '../../Field';
+import Field from '../Field';
 
-export function withField(someValue) {
+export function withField() {
   return WrappedComponent => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name;
 
     class Fielded extends PureComponent {
       static defaultProps = {
-        defaultValue: someValue,
         onChange() {},
       };
 
