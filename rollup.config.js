@@ -13,8 +13,10 @@ const config = {
   input: 'src/index.js',
   output: [
     {
+      exports: 'named',
       file: pkg.main,
       format: 'cjs',
+      name: 'spooner',
       sourcemap: true,
     },
     {

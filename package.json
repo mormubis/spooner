@@ -3,7 +3,6 @@
   "dependencies": {
     "@babel/runtime": "^7.2.0",
     "hoist-non-react-statics": "^3.2.1",
-    "prop-types": "^15.6.2",
     "underscore": "^1.9.1",
     "validate.js": "^0.12.0"
   },
@@ -31,6 +30,9 @@
     "rollup-plugin-replace": ">=2.1.0",
     "rollup-plugin-uglify": ">=6.0.0"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "forms"
   ],
@@ -39,11 +41,11 @@
   "module": "dist/index.module.js",
   "name": "spooner",
   "peerDependencies": {
-    "react": "^16.6.3"
+    "react": "^16.6.3",
+    "prop-types": "^15.6.2"
   },
   "scripts": {
-    "build": "NODE_ENV=development rollup -c",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "NODE_ENV=development rollup -c"
   },
   "version": "1.0.0"
 }
