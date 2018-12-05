@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 
 function capitalize(propName) {
   return `${propName.charAt(0).toUpperCase()}${propName.slice(1)}`;
@@ -16,7 +15,7 @@ export function withControlledProp(
   return WrappedComponent => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name;
 
-    class ControlledProp extends Component {
+    class ControlledProp extends PureComponent {
       static defaultProps = {
         [callbackName]() {},
       };
@@ -32,7 +31,10 @@ export function withControlledProp(
       isControlled = this.props[propName] !== undefined;
 
       state = {
-        [propName]: this.props[propName] || this.props[`default${PropName}`],
+        [propName]:
+          this.props[propName] !== undefined
+            ? this.props[propName]
+            : this.props[`default${PropName}`],
       };
 
       componentDidUpdate() {
@@ -45,21 +47,25 @@ export function withControlledProp(
         if (this.isControlled) {
           const { [propName]: before } = this.props;
 
-          if (after instanceof File || !_.isEqual(after, before)) {
+          if (after !== before) {
             onChange(after, before);
           }
         } else {
-          this.setState(prevState => {
-            const { [propName]: before } = prevState;
+          (() => {
+            let before;
+            this.setState(
+              prevState => {
+                ({ [propName]: before } = prevState);
 
-            if (after instanceof File || !_.isEqual(after, before)) {
-              onChange(after, before);
+                if (after !== before) {
+                  return { [propName]: after };
+                }
 
-              return { [propName]: after };
-            }
-
-            return undefined;
-          });
+                return undefined;
+              },
+              () => after !== before && onChange(after, before),
+            );
+          })();
         }
       };
 
@@ -70,6 +76,7 @@ export function withControlledProp(
         return (
           <WrappedComponent
             {...props}
+            // We need this object because of the interpolation name of the keys
             {...{
               [callbackName]: this.handleChange,
               [propName]: value,

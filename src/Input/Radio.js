@@ -39,4 +39,4 @@ export class Radio extends Component {
   }
 }
 
-export default withField()(Radio);
+export default withField(Radio);

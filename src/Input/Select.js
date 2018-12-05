@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+import React, { createRef, PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 
 import withField from '../with/field';
 
-export class Select extends Component {
+export class Select extends PureComponent {
   static defaultProps = {
+    multiple: false,
     onBlur() {},
     onChange() {},
     onFocus() {},
-    options: [],
   };
 
   static propTypes = {
@@ -16,42 +17,65 @@ export class Select extends Component {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
     ]),
+    multiple: PropTypes.bool,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
-    options: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        value: PropTypes.any,
-      }),
-    ),
-    value: PropTypes.any,
+    value: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.string),
+      PropTypes.string,
+    ]),
   };
 
+  element = createRef();
+
   componentDidMount() {
-    const { onChange, value } = this.props;
+    const { onChange, value: before } = this.props;
 
-    const option = this.option(value);
+    const after = this.getValue(before);
 
-    if (value !== option.value) {
-      onChange(option.value);
+    if (!_.isEqual(after, before)) {
+      onChange(after);
     }
   }
 
   componentDidUpdate(prevProps) {
     const { onChange, value } = this.props;
 
-    const option = this.option(value);
+    const after = this.getValue(value);
 
-    if (value !== prevProps.value && value !== option.value) {
-      onChange(option.value);
+    if (value !== prevProps.value && !_.isEqual(after, value)) {
+      onChange(after);
     }
   }
 
-  option(needle, key = 'value') {
-    const { options } = this.props;
+  getOption(needle) {
+    const { multiple } = this.props;
+    const options = Array.from(this.element.options);
 
-    return options.find(({ [key]: option }) => option === needle) || options[0];
+    return (
+      options.find(({ value: option }) => option === needle) ||
+      (multiple ? undefined : options[0])
+    );
+  }
+
+  getValue(raw) {
+    const { multiple } = this.props;
+    const options = Array.from(this.element.options);
+    const value = Array.isArray(raw) ? raw : [raw];
+
+    let selected = value
+      .map(this.getOption)
+      .filter(Boolean)
+      .map(option => option.value);
+
+    if (selected.length === 0) {
+      const initial = options[0] || {};
+
+      selected = [initial.value];
+    }
+
+    return multiple ? selected : selected[0];
   }
 
   handleBlur = () => {
@@ -65,10 +89,12 @@ export class Select extends Component {
 
     event.stopPropagation();
 
-    const needle = event.target.value;
-    const after = this.option(needle, 'name');
+    const raw = Array.from(event.target.selectedOptions).map(
+      option => option.value,
+    );
+    const after = this.getValue(raw);
 
-    onChange(after.value);
+    onChange(after);
   };
 
   handleFocus = () => {
@@ -78,8 +104,7 @@ export class Select extends Component {
   };
 
   render() {
-    const { children, options, value: raw, ...props } = this.props;
-    const option = this.option(raw);
+    const { children, value, ...props } = this.props;
 
     return (
       <select
@@ -87,16 +112,13 @@ export class Select extends Component {
         onBlur={this.handleBlur}
         onChange={this.handleChange}
         onFocus={this.handleFocus}
-        value={option.name}
+        ref={this.element}
+        value={value}
       >
-        {children
-          ? children
-          : options.map(({ name: option }) => (
-              <option key={option}>{option}</option>
-            ))}
+        {children}
       </select>
     );
   }
 }
 
-export default withField()(Select);
+export default withField(Select);

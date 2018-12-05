@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 
 import withField from '../with/field';
 
-export class Textarea extends Component {
+export class Input extends Component {
   static defaultProps = {
+    multiple: false,
     onBlur() {},
     onChange() {},
     onFocus() {},
   };
 
   static propTypes = {
+    multiple: PropTypes.bool,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
@@ -23,10 +25,11 @@ export class Textarea extends Component {
   };
 
   handleChange = event => {
-    const { onChange } = this.props;
+    const { multiple, onChange } = this.props;
+    const { files } = event.target;
 
     event.stopPropagation();
-    onChange(event.target.value);
+    onChange(multiple ? files : files[0]);
   };
 
   handleFocus = () => {
@@ -36,17 +39,18 @@ export class Textarea extends Component {
   };
 
   render() {
-    const { ...props } = this.props;
+    const { value: ignore, ...props } = this.props;
 
     return (
-      <textarea
+      <input
         {...props}
         onBlur={this.handleBlur}
         onChange={this.handleChange}
         onFocus={this.handleFocus}
+        type="file"
       />
     );
   }
 }
 
-export default withField(Textarea);
+export default withField(Input);

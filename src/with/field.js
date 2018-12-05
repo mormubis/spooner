@@ -4,61 +4,63 @@ import PropTypes from 'prop-types';
 
 import Field from '../Field';
 
-export function withField() {
-  return WrappedComponent => {
-    const displayName = WrappedComponent.displayName || WrappedComponent.name;
+export function withField(WrappedComponent) {
+  const displayName = WrappedComponent.displayName || WrappedComponent.name;
 
-    class Fielded extends PureComponent {
-      static defaultProps = {
-        onChange() {},
-      };
+  class inField extends PureComponent {
+    static defaultProps = {
+      onChange() {},
+    };
 
-      static displayName = `withField(${displayName})`;
+    static displayName = `Field(${displayName})`;
 
-      static propTypes = {
-        defaultValue: PropTypes.any,
-        error: PropTypes.string,
-        name: PropTypes.string,
-        onChange: PropTypes.func,
-        value: PropTypes.any,
-      };
+    static propTypes = {
+      defaultValue: PropTypes.any,
+      error: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      onChange: PropTypes.func,
+      value: PropTypes.any,
+    };
 
-      render() {
-        const {
-          defaultValue,
-          error,
-          name,
-          onChange,
-          value,
-          ...props
-        } = this.props;
+    render() {
+      const {
+        defaultError,
+        defaultValue,
+        error,
+        name,
+        onChange,
+        value,
+        ...props
+      } = this.props;
 
-        return (
-          <Field
-            defaultValue={defaultValue}
-            error={error}
-            name={name}
-            onChange={onChange}
-            value={value}
-          >
-            {({ error: _error, onChange, value: _value }) => (
-              <WrappedComponent
-                {...props}
-                error={_error}
-                name={name}
-                onChange={onChange}
-                value={_value}
-              />
-            )}
-          </Field>
-        );
-      }
+      return (
+        <Field
+          defaultError={defaultError}
+          defaultValue={defaultValue}
+          error={error}
+          name={name}
+          onChange={onChange}
+          value={value}
+        >
+          {state => (
+            <WrappedComponent
+              {...props}
+              defaultError={defaultError}
+              defaultValue={defaultValue}
+              error={state.error}
+              name={name}
+              onChange={onChange}
+              value={state.value}
+            />
+          )}
+        </Field>
+      );
     }
+  }
 
-    hoistNonReactStatics(Fielded, WrappedComponent);
+  hoistNonReactStatics(inField, WrappedComponent);
 
-    return Fielded;
-  };
+  return inField;
 }
 
 export default withField;

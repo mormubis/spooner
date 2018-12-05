@@ -1,0 +1,20 @@
+{
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "babel-eslint",
+  "settings": {
+    "import/resolver": "webpack",
+    "react": {
+      "version": "16.0"
+    }
+  },
+  "rules": {
+    "import/no-named-as-default": 0
+  }
+}
