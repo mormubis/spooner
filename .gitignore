@@ -1,3 +1,8 @@
+# npm
+/node_modules/
+
+# project
 /dist/
 
-/node_modules/
+# test
+/coverage/
