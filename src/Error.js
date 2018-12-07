@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Consumer } from './Form';
 
-const Error = () => (
+export const Error = () => (
   <Consumer>
     {({ error }) => (
       <div role="alert">
