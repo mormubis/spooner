@@ -1,16 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Error = ({ error }) => (
-  <div role="alert">
-    <ul>
-      {Object.entries(error).map(([key, value]) => (
-        <li key={key}>
-          {key} - {value}
-        </li>
-      ))}
-    </ul>
-  </div>
+import { Consumer } from './Form';
+
+const Error = () => (
+  <Consumer>
+    {({ error }) => (
+      <div role="alert">
+        <ul>
+          {Object.entries(error).map(([key, value]) => (
+            <li key={key}>
+              {key} - {value}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </Consumer>
 );
 
 Error.propTypes = {
