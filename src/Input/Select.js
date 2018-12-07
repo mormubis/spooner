@@ -51,7 +51,7 @@ export class Select extends PureComponent {
 
   getOption(needle) {
     const { multiple } = this.props;
-    const options = Array.from(this.element.options);
+    const options = Array.from(this.element.current.options);
 
     return (
       options.find(({ value: option }) => option === needle) ||
@@ -61,11 +61,11 @@ export class Select extends PureComponent {
 
   getValue(raw) {
     const { multiple } = this.props;
-    const options = Array.from(this.element.options);
+    const options = Array.from(this.element.current.options);
     const value = Array.isArray(raw) ? raw : [raw];
 
     let selected = value
-      .map(this.getOption)
+      .map(item => this.getOption(item))
       .filter(Boolean)
       .map(option => option.value);
 

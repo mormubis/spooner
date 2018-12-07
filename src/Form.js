@@ -47,6 +47,7 @@ export class Form extends PureComponent {
     const error = validate(value, constraint);
     const isValid = Object.keys(error).length === 0;
 
+    console.log(error);
     onErrorChanged(error);
 
     if (!isValid) {

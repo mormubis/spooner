@@ -33,6 +33,7 @@ export function withField(WrappedComponent) {
         ...props
       } = this.props;
 
+      console.log(props);
       return (
         <Field
           defaultError={defaultError}

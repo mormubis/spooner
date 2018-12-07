@@ -44,6 +44,8 @@ class Connector extends PureComponent {
   };
 
   render() {
+    const { children, error, value } = this.props;
+
     return children({ error, onChange: this.handleChange, value });
   }
 }
@@ -76,7 +78,7 @@ class Field extends PureComponent {
             unset={unset}
             value={props.value !== undefined ? props.value : value[name]}
           >
-            {children}
+            {props.children}
           </Connector>
         )}
       </Consumer>
