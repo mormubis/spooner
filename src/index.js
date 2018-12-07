@@ -1,6 +1,6 @@
 import Form from './Form';
 
-export { default as Errors } from './Errors';
+export { default as Error } from './Error';
 
 export { default as Field } from './Field';
 
