@@ -47,7 +47,6 @@ export class Form extends PureComponent {
     const error = validate(value, constraint);
     const isValid = Object.keys(error).length === 0;
 
-    console.log(error);
     onErrorChanged(error);
 
     if (!isValid) {
@@ -84,7 +83,6 @@ export class Form extends PureComponent {
     const { value: before } = this.props;
     const after = { ...before, [name]: value };
 
-    console.log('set', name, JSON.stringify(value));
     this.handleChange(name, after, before);
   };
 
@@ -93,7 +91,6 @@ export class Form extends PureComponent {
     const after = { ...before };
     delete after[name];
 
-    console.log('unset', name);
     this.handleChange(name, after, before);
   };
 

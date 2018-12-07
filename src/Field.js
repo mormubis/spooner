@@ -72,7 +72,7 @@ class Field extends PureComponent {
         {({ error, set, unset, value }) => (
           <Connector
             error={props.error !== undefined ? props.error : error[name]}
-            name={name}
+            name={props.name}
             onChange={props.onChange}
             set={set}
             unset={unset}

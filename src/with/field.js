@@ -9,6 +9,7 @@ export function withField(WrappedComponent) {
 
   class inField extends PureComponent {
     static defaultProps = {
+      defaultValue: '',
       onChange() {},
     };
 
@@ -33,7 +34,6 @@ export function withField(WrappedComponent) {
         ...props
       } = this.props;
 
-      console.log(props);
       return (
         <Field
           defaultError={defaultError}
@@ -46,11 +46,9 @@ export function withField(WrappedComponent) {
           {state => (
             <WrappedComponent
               {...props}
-              defaultError={defaultError}
-              defaultValue={defaultValue}
               error={state.error}
               name={name}
-              onChange={onChange}
+              onChange={state.onChange}
               value={state.value}
             />
           )}
