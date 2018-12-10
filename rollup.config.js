@@ -5,6 +5,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import external from 'rollup-plugin-peer-deps-external';
 import replace from 'rollup-plugin-replace';
+import { sizeSnapshot } from 'rollup-plugin-size-snapshot';
 import visualizer from 'rollup-plugin-visualizer';
 
 import pkg from './package.json';
@@ -47,6 +48,7 @@ const config = {
 
 if (env === 'production') {
   config.plugins.push(
+    sizeSnapshot(),
     minify({
       comments: false,
     }),

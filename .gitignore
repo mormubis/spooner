@@ -7,5 +7,6 @@
 # test
 /coverage/
 
-# visualizer
+# statistics
+/.size-snapshot.json
 /statistics.html

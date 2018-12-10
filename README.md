@@ -29,6 +29,17 @@ Helper components
 This is the basic component you are going to need to use. This is part of the 
 magic.
 
+#### Props
+* children
+* constraint
+* defaultError
+* defaultValue
+* error
+* onChange
+* onInvalid
+* onSubmit
+* value
+
 #### Example
 ```jsx
 import React from 'react';
