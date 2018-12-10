@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
+import compose from 'underscore-es/compose';
 
 import { Consumer } from './Form';
 import withControlledProp from './with/controlledProp';
@@ -86,7 +86,7 @@ class Field extends PureComponent {
   }
 }
 
-export default _.compose(
+export default compose(
   withControlledProp('error', 'onError'),
   withControlledProp('value', 'onChange'),
 )(Field);

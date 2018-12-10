@@ -1,6 +1,6 @@
 import React, { createRef, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
+import isEqual from 'underscore-es/isEqual';
 
 import withField from '../with/field';
 
@@ -34,7 +34,7 @@ export class Select extends PureComponent {
 
     const after = this.getValue(before);
 
-    if (!_.isEqual(after, before)) {
+    if (!isEqual(after, before)) {
       onChange(after);
     }
   }
@@ -44,7 +44,7 @@ export class Select extends PureComponent {
 
     const after = this.getValue(value);
 
-    if (value !== prevProps.value && !_.isEqual(after, value)) {
+    if (value !== prevProps.value && !isEqual(after, value)) {
       onChange(after);
     }
   }

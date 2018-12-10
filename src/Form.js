@@ -1,6 +1,7 @@
 import React, { createContext, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
+import compose from 'underscore-es/compose';
+import isEqual from 'underscore-es/isEqual';
 
 import { validate } from './validation';
 
@@ -62,7 +63,7 @@ export class Form extends PureComponent {
     const error = { ...prevError };
     delete error[name];
 
-    if (!_.isEqual(error, prevError)) {
+    if (!isEqual(error, prevError)) {
       onErrorChanged(error);
     }
   }
@@ -104,7 +105,7 @@ export class Form extends PureComponent {
   }
 }
 
-export default _.compose(
+export default compose(
   withControlledProp('error'),
   withControlledProp('value', 'onChange'),
 )(Form);
