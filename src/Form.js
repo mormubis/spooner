@@ -1,6 +1,7 @@
 import React, { createContext, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import compose from 'underscore-es/compose';
+import defer from 'underscore-es/defer';
 
 import { validate } from './validation';
 
@@ -40,6 +41,7 @@ export class Form extends PureComponent {
   };
 
   validate(value) {
+    console.log('validate', value);
     const { constraint, onErrorChanged, onInvalid } = this.props;
 
     const error = validate(value, constraint);
@@ -78,18 +80,23 @@ export class Form extends PureComponent {
   };
 
   set = (name, value) => {
-    const { value: before } = this.props;
-    const after = { ...before, [name]: value };
+    defer(() => {
+      console.log('set', name, value, this.props.value);
+      const { value: before } = this.props;
+      const after = { ...before, [name]: value };
 
-    this.handleChange(name, after, before);
+      this.handleChange(name, after, before);
+    });
   };
 
   unset = name => {
-    const { value: before } = this.props;
-    const after = { ...before };
-    delete after[name];
+    defer(() => {
+      const { value: before } = this.props;
+      const after = { ...before };
+      delete after[name];
 
-    this.handleChange(name, after, before);
+      this.handleChange(name, after, before);
+    });
   };
 
   render() {
