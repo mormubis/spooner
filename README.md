@@ -35,8 +35,18 @@ import React from 'react';
 import { Form, Input } from 'spooner';
 
 class Login extends Component {
+    login = async (values) => {
+        // ... some checks
+    };
+
     render() {
-        return 
+        return (
+            <Form onSubmit={this.login}>
+                <Input name"user" />
+                <Input name"password" type="password" />
+                <button>Log in</button>
+            </Form>
+        );
     }
 }
 ```
