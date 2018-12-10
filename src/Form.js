@@ -26,14 +26,12 @@ export class Form extends PureComponent {
   };
 
   static propTypes = {
-    className: PropTypes.string,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
     ]),
     constraint: PropTypes.object,
     error: PropTypes.object,
-    name: PropTypes.string,
     onChange: PropTypes.func,
     onErrorChanged: PropTypes.func,
     onInvalid: PropTypes.func,
@@ -96,15 +94,10 @@ export class Form extends PureComponent {
 
   render() {
     const { set, unset } = this;
-    const { className, children, error, name, value } = this.props;
+    const { children, error, value, ...props } = this.props;
 
     return (
-      <form
-        className={className}
-        name={name}
-        noValidate
-        onSubmit={this.handleSubmit}
-      >
+      <form noValidate {...props} onSubmit={this.handleSubmit}>
         <Provider value={{ error, set, unset, value }}>{children}</Provider>
       </form>
     );
