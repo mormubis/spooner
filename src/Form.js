@@ -1,7 +1,6 @@
 import React, { createContext, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import compose from 'underscore-es/compose';
-import isEqual from 'underscore-es/isEqual';
 
 import { validate } from './validation';
 
@@ -63,7 +62,7 @@ export class Form extends PureComponent {
     const error = { ...prevError };
     delete error[name];
 
-    if (!isEqual(error, prevError)) {
+    if (JSON.stringify(error) !== JSON.stringify(prevError)) {
       onErrorChanged(error);
     }
   }
@@ -95,7 +94,15 @@ export class Form extends PureComponent {
 
   render() {
     const { set, unset } = this;
-    const { children, error, value, ...props } = this.props;
+    const {
+      children,
+      error,
+      onChange,
+      onErrorChanged,
+      onInvalid,
+      value,
+      ...props
+    } = this.props;
 
     return (
       <form noValidate {...props} onSubmit={this.handleSubmit}>

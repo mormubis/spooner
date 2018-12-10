@@ -23,7 +23,7 @@ class Connector extends PureComponent {
   };
 
   componentDidMount() {
-    const { set, value } = this.props;
+    const { name, set, value } = this.props;
 
     if (value !== undefined) {
       set(name, value);

@@ -4,7 +4,7 @@ export { default as Error } from './Error';
 
 export { default as Field } from './Field';
 
-export { Input, Checkbox, Radio, Select, Textarea } from './Input/';
+export { Checkbox, default as Input, Radio, Select, Textarea } from './Input/';
 
 export { default as withField } from './with/field';
 
