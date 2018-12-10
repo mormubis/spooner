@@ -58,6 +58,7 @@
     "react": "^16.6.3",
     "prop-types": "^15.6.2"
   },
+  "repository": "adelarosab/spooner",
   "scripts": {
     "build": "rollup -c",
     "prepare": "NODE_ENV=production npm run build",
