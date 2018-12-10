@@ -39,4 +39,4 @@ export class Checkbox extends Component {
   }
 }
 
-export default withField(Checkbox);
+export default withField(false)(Checkbox);

@@ -49,4 +49,4 @@ export class Textarea extends Component {
   }
 }
 
-export default withField(Textarea);
+export default withField('')(Textarea);

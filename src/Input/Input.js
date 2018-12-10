@@ -49,4 +49,4 @@ export class Input extends Component {
   }
 }
 
-export default withField(Input);
+export default withField('')(Input);

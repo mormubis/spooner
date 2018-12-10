@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import withField from '../with/field';
 
-export class Input extends Component {
+export class File extends Component {
   static defaultProps = {
     multiple: false,
     onBlur() {},
@@ -53,4 +53,4 @@ export class Input extends Component {
   }
 }
 
-export default withField(Input);
+export default withField()(File);

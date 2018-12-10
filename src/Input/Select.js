@@ -123,4 +123,4 @@ export class Select extends PureComponent {
   }
 }
 
-export default withField(Select);
+export default withField()(Select);
