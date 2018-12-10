@@ -41,8 +41,14 @@
     "dist"
   ],
   "keywords": [
+    "form",
     "forms",
-    "react"
+    "high order component",
+    "hoc",
+    "react",
+    "spooner",
+    "validate",
+    "validation"
   ],
   "license": "MIT",
   "main": "dist/index.js",
