@@ -40,6 +40,30 @@ magic.
 * onSubmit
 * value
 
+##### children: func
+The content you want
+
+##### constraint?: object
+Validation
+
+##### defaultValue?: object
+Initial values of the form
+
+##### error?: object
+Use error as a controlled prop, this prop will reflects the changes on the error of the form
+
+##### onChange?: func
+Function that fires each time a change is taken in the form
+
+##### onInvalid?: func
+Function that fires each time validation went wrong
+
+##### onSubmit: func
+Function that fires after validation has been passed
+
+##### value?: object
+Value as a controlled prop, this prop will reflects the changes on the error of the form
+
 #### Example
 ```jsx
 import React from 'react';
