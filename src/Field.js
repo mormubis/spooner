@@ -5,7 +5,7 @@ import compose from 'underscore-es/compose';
 import { Consumer } from './Form';
 import withControlledProp from './with/controlledProp';
 
-class Connector extends PureComponent {
+export class Connector extends PureComponent {
   static defaultProps = {
     onChange() {},
     set() {},
@@ -50,7 +50,7 @@ class Connector extends PureComponent {
   }
 }
 
-class Field extends PureComponent {
+export class Field extends PureComponent {
   static defaultProps = {
     children() {},
     onChange() {},

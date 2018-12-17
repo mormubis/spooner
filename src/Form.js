@@ -7,14 +7,12 @@ import { validate } from './validation';
 
 import withControlledProp from './with/controlledProp';
 
-const { Consumer, Provider } = createContext({
+export const { Consumer, Provider } = createContext({
   error: {},
   set() {},
   unset() {},
   value: {},
 });
-
-export { Consumer };
 
 export class Form extends PureComponent {
   static defaultProps = {
