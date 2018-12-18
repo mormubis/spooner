@@ -2,8 +2,16 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import compose from 'underscore-es/compose';
 
-import { Consumer } from './Form';
+import { Consumer, Provider } from './Form';
 import withControlledProp from './with/controlledProp';
+
+function identity(children) {
+  return children;
+}
+
+function withProvider(children) {
+  return <Provider>{children}</Provider>;
+}
 
 export class Connector extends PureComponent {
   static defaultProps = {
@@ -53,12 +61,14 @@ export class Connector extends PureComponent {
 export class Field extends PureComponent {
   static defaultProps = {
     children() {},
+    isolate: false,
     onChange() {},
   };
 
   static propTypes = {
     children: PropTypes.func,
     error: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    isolate: PropTypes.bool,
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     value: PropTypes.any,
@@ -69,18 +79,20 @@ export class Field extends PureComponent {
 
     return (
       <Consumer>
-        {({ error, set, unset, value }) => (
-          <Connector
-            error={props.error !== undefined ? props.error : error[name]}
-            name={props.name}
-            onChange={props.onChange}
-            set={set}
-            unset={unset}
-            value={props.value !== undefined ? props.value : value[name]}
-          >
-            {props.children}
-          </Connector>
-        )}
+        {({ error, set, unset, value }) =>
+          [props.isolate ? withProvider : identity](
+            <Connector
+              error={props.error !== undefined ? props.error : error[name]}
+              name={props.name}
+              onChange={props.onChange}
+              set={set}
+              unset={unset}
+              value={props.value !== undefined ? props.value : value[name]}
+            >
+              {props.children}
+            </Connector>,
+          )
+        }
       </Consumer>
     );
   }

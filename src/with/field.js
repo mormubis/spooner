@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 
 import Field from '../Field';
 
-export function withField(defaults) {
+export function withField(_defaultValue, _isolate) {
   return WrappedComponent => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name;
 
     class inField extends PureComponent {
       static defaultProps = {
-        defaultValue: defaults,
+        defaultValue: _defaultValue,
+        isolate: _isolate,
         onChange() {},
       };
 
@@ -29,6 +30,7 @@ export function withField(defaults) {
           defaultError,
           defaultValue,
           error,
+          isolate,
           name,
           onChange,
           value,
@@ -40,6 +42,7 @@ export function withField(defaults) {
             defaultError={defaultError}
             defaultValue={defaultValue}
             error={error}
+            isolate={isolate}
             name={name}
             onChange={onChange}
             value={value}
