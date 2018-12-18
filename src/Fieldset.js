@@ -13,7 +13,6 @@ export class Fieldset extends PureComponent {
 
   set = (name, value) => {
     defer(() => {
-      console.log('set', name, value, this.props.value);
       const { onChange, value: before } = this.props;
       const after = { ...before, [name]: value };
 

@@ -39,7 +39,6 @@ export class Form extends PureComponent {
   };
 
   validate(value) {
-    console.log('validate', value);
     const { constraint, onErrorChanged, onInvalid } = this.props;
 
     const error = validate(value, constraint);
@@ -79,7 +78,6 @@ export class Form extends PureComponent {
 
   set = (name, value) => {
     defer(() => {
-      console.log('set', name, value, this.props.value);
       const { value: before } = this.props;
       const after = { ...before, [name]: value };
 
