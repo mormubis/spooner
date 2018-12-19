@@ -18,8 +18,10 @@ export function withField(_defaultValue, _isolate) {
       static displayName = `Field(${displayName})`;
 
       static propTypes = {
+        defaultError: PropTypes.any,
         defaultValue: PropTypes.any,
-        error: PropTypes.string,
+        isolate: PropTypes.bool,
+        error: PropTypes.any,
         name: PropTypes.string.isRequired,
         onChange: PropTypes.func,
         value: PropTypes.any,
@@ -47,15 +49,7 @@ export function withField(_defaultValue, _isolate) {
             onChange={onChange}
             value={value}
           >
-            {state => (
-              <WrappedComponent
-                {...props}
-                error={state.error}
-                name={name}
-                onChange={state.onChange}
-                value={state.value}
-              />
-            )}
+            {state => <WrappedComponent {...props} {...state} name={name} />}
           </Field>
         );
       }

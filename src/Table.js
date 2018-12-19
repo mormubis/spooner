@@ -23,6 +23,8 @@ export class Table extends PureComponent {
   keys = this.props.value.map(uuid);
 
   componentDidUpdate(prevProps) {
+    const { value } = this.props;
+
     if (value !== prevProps.value) {
       this.keys = value.map(uuid);
     }
@@ -83,9 +85,17 @@ export class Table extends PureComponent {
 
     return (
       <Provider value={{ error, set, unset, value }}>
-        {keys.map(key => (
+        {keys.map((key, index, array) => (
           <Field key={key} name={key}>
-            {state => children({ ...state, add: add, remove: remove(key) })}
+            {state =>
+              children({
+                ...state,
+                $add: add,
+                $remove: remove(key),
+                array,
+                index,
+              })
+            }
           </Field>
         ))}
       </Provider>
