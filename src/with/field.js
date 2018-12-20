@@ -49,7 +49,9 @@ export function withField(_defaultValue, _isolate) {
             onChange={onChange}
             value={value}
           >
-            {state => <WrappedComponent {...props} {...state} name={name} />}
+            {context => (
+              <WrappedComponent {...props} {...context} name={name} />
+            )}
           </Field>
         );
       }

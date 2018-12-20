@@ -43,7 +43,7 @@ export function withTable(WrappedComponent) {
           onChange={onChange}
           value={value}
         >
-          {state => <WrappedComponent {...props} {...state} name={name} />}
+          {context => <WrappedComponent {...props} {...context} name={name} />}
         </Table>
       );
     }

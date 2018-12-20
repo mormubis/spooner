@@ -87,9 +87,9 @@ export class Table extends PureComponent {
       <Provider value={{ error, set, unset, value }}>
         {keys.map((key, index, array) => (
           <Field key={key} name={key}>
-            {state =>
+            {context =>
               children({
-                ...state,
+                ...context,
                 $add: add,
                 $remove: remove(key),
                 array,

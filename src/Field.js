@@ -75,21 +75,21 @@ export class Field extends PureComponent {
   };
 
   render() {
-    const { props } = this;
+    const { children, error, isolate, name, onChange } = this.props;
 
     return (
       <Consumer>
-        {({ error, set, unset, value }) =>
-          [props.isolate ? withProvider : identity](
+        {state =>
+          [isolate ? withProvider : identity](
             <Connector
-              error={props.error !== undefined ? props.error : error[name]}
-              name={props.name}
-              onChange={props.onChange}
-              set={set}
-              unset={unset}
-              value={props.value !== undefined ? props.value : value[name]}
+              error={error !== undefined ? error : state.error[name]}
+              name={name}
+              onChange={onChange}
+              set={state.set}
+              unset={state.unset}
+              value={value !== undefined ? value : state.value[name]}
             >
-              {props.children}
+              {children}
             </Connector>,
           )
         }
