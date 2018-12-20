@@ -68,5 +68,5 @@
     "test:ci": "npm test -- --maxWorkers='4' --no-cache --silent",
     "test:watch": "jest --watch"
   },
-  "version": "1.1.1"
+  "version": "1.2.0"
 }
