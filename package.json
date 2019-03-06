@@ -63,7 +63,9 @@
   "repository": "adelarosab/spooner",
   "scripts": {
     "build": "rollup -c",
+    "postversion": "gitmoji --init",
     "prepare": "NODE_ENV=production npm run build",
+    "preversion": "gitmoji --remove",
     "start": "rollup -c -w",
     "test": "jest --silent",
     "test:ci": "npm test -- --maxWorkers='4' --no-cache --silent",
