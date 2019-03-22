@@ -2,6 +2,7 @@
   "author": "Adrian de la Rosa <adrian@joinedapp.com>",
   "dependencies": {
     "hoist-non-react-statics": "^3.3.0",
+    "uncontrollable": "^6.1.0",
     "underscore-es": "^1.9.8",
     "validate.js": "^0.12.0"
   },
