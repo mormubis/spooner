@@ -19,7 +19,7 @@ export class Radio extends Component {
   };
 
   handleChange = event => {
-    const { onChange } = this.props;
+    const { content, onChange, value } = this.props;
 
     event.stopPropagation();
 

@@ -1,10 +1,12 @@
-import React, { PureComponent } from ' react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import defer from 'underscore-es/defer';
 
 import Field from './Field';
-import { Provider } from './Form';
+import { Context } from './Form';
 import withField from './with/field';
+
+const { Provider } = Context;
 
 function uuid() {
   return Math.floor((1 + Math.random()) * 0x10000)
@@ -20,6 +22,7 @@ export class Table extends PureComponent {
     value: PropTypes.array,
   };
 
+  // eslint-disable-next-line
   keys = this.props.value.map(uuid);
 
   componentDidUpdate(prevProps) {

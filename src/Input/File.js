@@ -16,6 +16,7 @@ export class File extends Component {
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
+    value: PropTypes.any,
   };
 
   handleBlur = () => {
