@@ -4,17 +4,20 @@
     "jest": true
   },
   "extends": [
+    "airbnb",
     "plugin:react/recommended",
     "plugin:prettier/recommended"
   ],
   "parser": "babel-eslint",
   "settings": {
-    "import/resolver": "webpack",
     "react": {
       "version": "16.0"
     }
   },
   "rules": {
-    "import/no-named-as-default": 0
+    "import/no-named-as-default": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-filename-extension": ["on", { "extensions": [".js", ".jsx"] }],
+    "react/jsx-one-expression-per-line": "off"
   }
 }
