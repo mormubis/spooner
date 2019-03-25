@@ -1,28 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-import { Consumer } from './Form';
+import { Context } from './Form';
 
-export const Error = () => (
-  <Consumer>
-    {({ error }) => (
-      <div role="alert">
-        <ul>
-          {Object.entries(error).map(([key, value]) => (
-            <li key={key}>
-              {key} - {value}
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-  </Consumer>
-);
+export const Error = () => {
+  const state = useContext(Context);
 
-Error.propTypes = {
-  error: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  ),
+  return (
+    <div role="alert">
+      <ul>
+        {Object.entries(state.error).map(([key, value]) => (
+          <li key={key}>
+            {key} -{value}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
 
 export default Error;

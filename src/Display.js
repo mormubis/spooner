@@ -1,13 +1,13 @@
-import React from 'react';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { Consumer } from './Form';
+import { Context } from './Form';
 
-export function Display() {
-  const { name } = this.props;
+export const Display = ({ children, name }) => {
+  const state = useContext(Context);
 
-  return <Consumer>{state => children(state.value[name])}</Consumer>;
-}
+  return children(state.value[name]);
+};
 
 Display.defaultProps = {
   children() {},
