@@ -18,6 +18,7 @@
     "import/no-named-as-default": "off",
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": ["on", { "extensions": [".js", ".jsx"] }],
-    "react/jsx-one-expression-per-line": "off"
+    "react/jsx-one-expression-per-line": "off",
+    "react/require-default-props": "off"
   }
 }
