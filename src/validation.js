@@ -1,14 +1,14 @@
-import vjs from "validate.js";
+import vjs from 'validate.js';
 
 function number(value, options) {
   return vjs.single(value, {
-    numericality: { ...options, strict: true }
+    numericality: { ...options, strict: true },
   });
 }
 
 function required(value, options) {
   return vjs.single(value, {
-    presence: { ...options, allowEmpty: false }
+    presence: { ...options, allowEmpty: false },
   });
 }
 
@@ -31,7 +31,7 @@ vjs.validators = {
   number,
   oneOf: vjs.validators.inclusion,
   required,
-  shape
+  shape,
 };
 
 export function validate(values, constraints) {
@@ -39,7 +39,7 @@ export function validate(values, constraints) {
 
   return Object.keys(errors).reduce(
     (acc, key) => ({ ...acc, [key]: errors[key][0] }),
-    {}
+    {},
   );
 }
 

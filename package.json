@@ -67,7 +67,7 @@
   "repository": "adelarosab/spooner",
   "scripts": {
     "build": "rollup -c",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json|md|yml)\"",
+    "format": "prettier --ignore-path .gitignore -l --write \"**/*.+(js|json|md|yml)\"",
     "lint": "eslint \"src/**/*.js\" --fix --max-warnings 0",
     "postversion": "gitmoji --init",
     "prepare": "NODE_ENV=production npm run build",
