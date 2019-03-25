@@ -1,9 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+// import useUncontrolled from 'uncontrollable/hook';
 
-import Connector from './Connector';
-import { Consumer, Provider } from './Form';
-import withControlledProp from './with/controlledProp';
+import { Context } from './Form';
 
 function identity(children) {
   return children;
@@ -13,44 +12,63 @@ function withProvider(children) {
   return <Provider>{children}</Provider>;
 }
 
-export class Field extends PureComponent {
-  static defaultProps = {
-    children() {},
-    isolate: false,
-    onChange() {},
+const { Provider } = Context;
+
+export const Field = props => {
+  const { children, name } = props;
+  // const { onInvalid, onChange, ...input } = useUncontrolled(props, {
+  //   error: 'onInvalid',
+  //   value: 'onChange',
+  // });
+
+  const { onInvalid, onChange, ...input } = props;
+
+  const { set, unset, ...state } = useContext(Context);
+
+  const [error, value] = [
+    input.error !== undefined ? input.error : state.error[name],
+    input.value !== undefined ? input.value : state.value[name],
+  ];
+
+  useEffect(() => {
+    if (value !== undefined) {
+      set(name, value);
+    }
+
+    return () => {
+      unset(name);
+    };
+  }, []);
+
+  useEffect(() => onInvalid(error), [error]);
+
+  const handleChange = after => {
+    onChange(after, value);
+    set(name, after);
   };
 
-  static propTypes = {
-    children: PropTypes.func,
-    error: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    isolate: PropTypes.bool,
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func,
-    value: PropTypes.any,
-  };
+  const { isolate } = props;
 
-  render() {
-    const { children, error, isolate, name, onChange, value } = this.props;
+  return (isolate ? withProvider : identity)(
+    children({ error, onChange: handleChange, value }),
+  );
+};
 
-    return (
-      <Consumer>
-        {state =>
-          (isolate ? withProvider : identity)(
-            <Connector
-              error={error !== undefined ? error : state.error[name]}
-              name={name}
-              onChange={onChange}
-              set={state.set}
-              unset={state.unset}
-              value={value !== undefined ? value : state.value[name]}
-            >
-              {children}
-            </Connector>,
-          )
-        }
-      </Consumer>
-    );
-  }
-}
+Field.defaultProps = {
+  children() {},
+  isolate: false,
+  onChange() {},
+  onInvalid() {},
+};
 
-export default withControlledProp('error', 'onError')(Field);
+Field.propTypes = {
+  children: PropTypes.func,
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  isolate: PropTypes.bool,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  onInvalid: PropTypes.func,
+  value: PropTypes.any,
+};
+
+export default Field;

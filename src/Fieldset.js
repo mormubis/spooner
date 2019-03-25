@@ -1,28 +1,27 @@
-import React, { PureComponent } from ' react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import defer from 'underscore-es/defer';
 
-import { Provider } from './Form';
+import { Context } from './Form';
 import withField from './with/field';
 
-export class Fieldset extends PureComponent {
-  static propTypes = {
-    children: PropTypes.func,
-    legend: PropTypes.string,
-  };
+const { Provider } = Context;
 
-  set = (name, value) => {
+export const Fieldset = input => {
+  const { children, error, legend, onChange, value, ...props } = input;
+
+  const set = (name, val) => {
     defer(() => {
-      const { onChange, value: before } = this.props;
-      const after = { ...before, [name]: value };
+      const before = val;
+      const after = { ...before, [name]: val };
 
       onChange(after, before);
     });
   };
 
-  unset = name => {
+  const unset = name => {
     defer(() => {
-      const { onChange, value: before } = this.props;
+      const before = value;
       const after = { ...before };
       delete after[name];
 
@@ -30,19 +29,31 @@ export class Fieldset extends PureComponent {
     });
   };
 
-  render() {
-    const { set, unset } = this;
-    const { children, error, legend, value, ...props } = this.props;
+  return (
+    <Provider value={{ error, set, unset, value }}>
+      <fieldset {...props}>
+        {legend && <legend>{legend}</legend>}
+        {children}
+      </fieldset>
+    </Provider>
+  );
+};
 
-    return (
-      <Provider value={{ error, set, unset, value }}>
-        <fieldset {...props}>
-          {legend && <legend>{legend}</legend>}
-          {children}
-        </fieldset>
-      </Provider>
-    );
-  }
-}
+Fieldset.defaultProps = {
+  error: {},
+  onChange() {},
+  value: {},
+};
+
+Fieldset.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  error: PropTypes.object,
+  legend: PropTypes.string,
+  onChange: PropTypes.func,
+  value: PropTypes.object,
+};
 
 export default withField({})(Fieldset);

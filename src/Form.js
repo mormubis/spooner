@@ -1,121 +1,116 @@
-import React, { createContext, PureComponent } from 'react';
+import React, { createContext } from 'react';
 import PropTypes from 'prop-types';
-import compose from 'underscore-es/compose';
+// import useUncontrolled from 'uncontrollable/hook';
 import defer from 'underscore-es/defer';
 
-import { validate } from './validation';
+import { validate as validation } from './validation';
 
-import withControlledProp from './with/controlledProp';
-
-export const { Consumer, Provider } = createContext({
+export const Context = createContext({
   error: {},
   set() {},
   unset() {},
   value: {},
 });
 
-export class Form extends PureComponent {
-  static defaultProps = {
-    error: {},
-    onChange() {},
-    onErrorChanged() {},
-    onInvalid() {},
-    onSubmit() {},
-    value: {},
-  };
+const { Provider } = Context;
 
-  static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
-    constraint: PropTypes.object,
-    error: PropTypes.object,
-    onChange: PropTypes.func,
-    onErrorChanged: PropTypes.func,
-    onInvalid: PropTypes.func,
-    onSubmit: PropTypes.func,
-    value: PropTypes.object,
-  };
+export const Form = input => {
+  const {
+    children,
+    constraint,
+    error,
+    onChange,
+    onErrorChange,
+    onInvalid,
+    onSubmit,
+    value,
+    ...props
+  } = input;
 
-  validate(value) {
-    const { constraint, onErrorChanged, onInvalid } = this.props;
+  // const { error, onChange, onErrorChange, value } = useUncontrolled(props, {
+  //   error: 'onErrorChange',
+  //   value: 'onChange',
+  // });
 
-    const error = validate(value, constraint);
-    const isValid = Object.keys(error).length === 0;
+  const validate = val => {
+    const nextError = validation(val, constraint);
+    const isValid = Object.keys(nextError).length === 0;
 
-    onErrorChanged(error);
+    onErrorChange(nextError);
 
     if (!isValid) {
-      onInvalid(error);
+      onInvalid(nextError);
     }
 
     return isValid;
-  }
+  };
 
-  handleChange(name, after, before) {
-    const { error: prevError, onChange, onErrorChanged } = this.props;
-
+  const handleChange = (name, after, before) => {
     onChange(after, before);
 
-    const error = { ...prevError };
-    delete error[name];
+    const nextError = { ...error };
+    delete nextError[name];
 
-    if (JSON.stringify(error) !== JSON.stringify(prevError)) {
-      onErrorChanged(error);
+    if (JSON.stringify(nextError) !== JSON.stringify(error)) {
+      onErrorChange(nextError);
     }
-  }
+  };
 
-  handleSubmit = event => {
-    const { onSubmit, value } = this.props;
-
+  const handleSubmit = event => {
     event.preventDefault();
 
-    if (this.validate(value)) {
+    if (validate(value)) {
       onSubmit(value);
     }
   };
 
-  set = (name, value) => {
+  const set = (name, val) => {
     defer(() => {
-      const { value: before } = this.props;
-      const after = { ...before, [name]: value };
+      const before = val;
+      const after = { ...before, [name]: val };
 
-      this.handleChange(name, after, before);
+      handleChange(name, after, before);
     });
   };
 
-  unset = name => {
+  const unset = name => {
     defer(() => {
-      const { value: before } = this.props;
+      const before = value;
       const after = { ...before };
       delete after[name];
 
-      this.handleChange(name, after, before);
+      handleChange(name, after, before);
     });
   };
 
-  render() {
-    const { set, unset } = this;
-    const {
-      children,
-      error,
-      onChange,
-      onErrorChanged,
-      onInvalid,
-      value,
-      ...props
-    } = this.props;
+  return (
+    <form noValidate {...props} onSubmit={handleSubmit}>
+      <Provider value={{ error, set, unset, value }}>{children}</Provider>
+    </form>
+  );
+};
 
-    return (
-      <form noValidate {...props} onSubmit={this.handleSubmit}>
-        <Provider value={{ error, set, unset, value }}>{children}</Provider>
-      </form>
-    );
-  }
-}
+Form.defaultProps = {
+  error: {},
+  onChange() {},
+  onErrorChange() {},
+  onInvalid() {},
+  onSubmit() {},
+  value: {},
+};
 
-export default compose(
-  withControlledProp('error'),
-  withControlledProp('value', 'onChange'),
-)(Form);
+Form.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  constraint: PropTypes.object,
+  error: PropTypes.object,
+  onChange: PropTypes.func,
+  onErrorChange: PropTypes.func,
+  onInvalid: PropTypes.func,
+  onSubmit: PropTypes.func,
+  value: PropTypes.object,
+};
+
+export default Form;
