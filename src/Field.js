@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-// import useUncontrolled from 'uncontrollable/hook';
+import useUncontrolled from 'uncontrollable/hook';
 
 import { Context } from './Form';
 
@@ -15,13 +15,11 @@ function withProvider(children) {
 const { Provider } = Context;
 
 export const Field = props => {
-  const { children, name } = props;
-  // const { onInvalid, onChange, ...input } = useUncontrolled(props, {
-  //   error: 'onInvalid',
-  //   value: 'onChange',
-  // });
-
-  const { onInvalid, onChange, ...input } = props;
+  const { children, isolate, name } = props;
+  const { onInvalid, onChange, ...input } = useUncontrolled(props, {
+    error: 'onInvalid',
+    value: 'onChange',
+  });
 
   const { set, unset, ...state } = useContext(Context);
 
@@ -46,8 +44,6 @@ export const Field = props => {
     onChange(after, value);
     set(name, after);
   };
-
-  const { isolate } = props;
 
   return (isolate ? withProvider : identity)(
     children({ error, onChange: handleChange, value }),

@@ -1,7 +1,8 @@
 import React, { createContext } from 'react';
 import PropTypes from 'prop-types';
-// import useUncontrolled from 'uncontrollable/hook';
+import useUncontrolled from 'uncontrollable/hook';
 import defer from 'underscore-es/defer';
+import omit from 'underscore-es/omit';
 
 import { validate as validation } from './validation';
 
@@ -15,22 +16,18 @@ export const Context = createContext({
 const { Provider } = Context;
 
 export const Form = input => {
-  const {
-    children,
-    constraint,
-    error,
-    onChange,
-    onErrorChange,
-    onInvalid,
-    onSubmit,
-    value,
-    ...props
-  } = input;
+  const { children, constraint, onInvalid, onSubmit, ...props } = omit(
+    input,
+    'error',
+    'onChange',
+    'onErrorChange',
+    'value',
+  );
 
-  // const { error, onChange, onErrorChange, value } = useUncontrolled(props, {
-  //   error: 'onErrorChange',
-  //   value: 'onChange',
-  // });
+  const { error, onChange, onErrorChange, value } = useUncontrolled(props, {
+    error: 'onErrorChange',
+    value: 'onChange',
+  });
 
   const validate = val => {
     const nextError = validation(val, constraint);
