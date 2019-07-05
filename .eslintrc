@@ -4,21 +4,35 @@
     "jest": true
   },
   "extends": [
-    "airbnb",
     "plugin:react/recommended",
-    "plugin:prettier/recommended"
+    "airbnb",
+    "prettier",
+    "prettier/react"
   ],
   "parser": "babel-eslint",
   "settings": {
     "react": {
-      "version": "16.0"
+      "version": "16.8"
     }
   },
   "rules": {
     "import/no-named-as-default": "off",
+    "react/destructuring-assignment": [
+      "warn",
+      "always",
+      {
+        "ignoreClassFields": true
+      }
+    ],
     "react/forbid-prop-types": "off",
-    "react/jsx-filename-extension": ["on", { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": [
+      "on",
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
     "react/jsx-one-expression-per-line": "off",
+    "react/no-did-update-set-state": "off",
     "react/require-default-props": "off"
   }
 }
