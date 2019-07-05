@@ -1,12 +1,20 @@
-import React, { createContext } from 'react';
+import React, {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
-import useUncontrolled from 'uncontrollable/hook';
+import { useUncontrolled } from 'uncontrollable';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import defer from 'underscore-es/defer';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import omit from 'underscore-es/omit';
 
-import { validate as validation } from './validation';
+import validate from './validation';
 
-export const Context = createContext({
+const Context = createContext({
   error: {},
   set() {},
   unset() {},
@@ -15,74 +23,86 @@ export const Context = createContext({
 
 const { Provider } = Context;
 
-export const Form = input => {
-  const { children, constraint, onInvalid, onSubmit, ...props } = omit(
-    input,
+const useForm = () => {
+  return useContext(Context);
+};
+
+const Form = props => {
+  const { children, constraint, onInvalid, onSubmit, ...formProps } = omit(
+    props,
     'error',
     'onChange',
     'onErrorChange',
     'value',
   );
 
-  const { error, onChange, onErrorChange, value } = useUncontrolled(props, {
+  const { onChange, onErrorChange, ...input } = useUncontrolled(props, {
     error: 'onErrorChange',
     value: 'onChange',
   });
 
-  const validate = val => {
-    const nextError = validation(val, constraint);
-    const isValid = Object.keys(nextError).length === 0;
+  const handleChange = useCallback(
+    (name, after, before) => {
+      onChange(after, before);
 
-    onErrorChange(nextError);
+      const error = { ...input.error };
+      delete error[name];
 
-    if (!isValid) {
-      onInvalid(nextError);
-    }
-
-    return isValid;
-  };
-
-  const handleChange = (name, after, before) => {
-    onChange(after, before);
-
-    const nextError = { ...error };
-    delete nextError[name];
-
-    if (JSON.stringify(nextError) !== JSON.stringify(error)) {
-      onErrorChange(nextError);
-    }
-  };
+      if (JSON.stringify(error) !== JSON.stringify(input.error)) {
+        onErrorChange(error);
+      }
+    },
+    [JSON.stringify(input.error), onChange, onErrorChange],
+  );
 
   const handleSubmit = event => {
     event.preventDefault();
 
-    if (validate(value)) {
-      onSubmit(value);
+    const error = validate(input.value, constraint);
+    const isValid = Object.keys(error).length === 0;
+
+    if (isValid) {
+      onSubmit(input.value);
+    } else {
+      onErrorChange(error);
+
+      onInvalid(error);
     }
   };
 
-  const set = (name, val) => {
-    defer(() => {
-      const before = val;
-      const after = { ...before, [name]: val };
+  const set = useCallback(
+    (name, value) => {
+      defer(() => {
+        const before = value;
+        const after = { ...before, [name]: value };
 
-      handleChange(name, after, before);
-    });
-  };
+        handleChange(name, after, before);
+      });
+    },
+    [handleChange, JSON.stringify(input.value)],
+  );
 
-  const unset = name => {
-    defer(() => {
-      const before = value;
-      const after = { ...before };
-      delete after[name];
+  const unset = useCallback(
+    name => {
+      defer(() => {
+        const before = input.value;
+        const after = { ...before };
+        delete after[name];
 
-      handleChange(name, after, before);
-    });
-  };
+        handleChange(name, after, before);
+      });
+    },
+    [handleChange, JSON.stringify(input.value)],
+  );
+
+  const context = useMemo(
+    () => ({ error: input.error, set, unset, value: input.value }),
+    [JSON.stringify(input.error), set, unset, JSON.stringify(input.value)],
+  );
 
   return (
-    <form noValidate {...props} onSubmit={handleSubmit}>
-      <Provider value={{ error, set, unset, value }}>{children}</Provider>
+    <form noValidate {...formProps} onSubmit={handleSubmit}>
+      <Provider value={context}>{children}</Provider>
     </form>
   );
 };
@@ -110,4 +130,6 @@ Form.propTypes = {
   value: PropTypes.object,
 };
 
-export default Form;
+export { useForm, Provider };
+
+export default memo(Form);

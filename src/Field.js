@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { memo, useCallback, useDebugValue, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import useUncontrolled from 'uncontrollable/hook';
+import { useUncontrolled } from 'uncontrollable';
 
-import { Context } from './Form';
+import { useForm, Provider } from './Form';
 
 function identity(children) {
   return children;
@@ -12,21 +12,20 @@ function withProvider(children) {
   return <Provider>{children}</Provider>;
 }
 
-const { Provider } = Context;
+const useField = ({ name, ...props }) => {
+  const { set, unset, ...state } = useForm();
 
-export const Field = props => {
-  const { children, isolate, name } = props;
   const { onInvalid, onChange, ...input } = useUncontrolled(props, {
     error: 'onInvalid',
     value: 'onChange',
   });
 
-  const { set, unset, ...state } = useContext(Context);
-
   const [error, value] = [
-    input.error !== undefined ? input.error : state.error[name],
-    input.value !== undefined ? input.value : state.value[name],
+    input.error !== undefined ? input.error : state.error[input.name],
+    input.value !== undefined ? input.value : state.value[input.name],
   ];
+
+  useDebugValue({ error, value });
 
   useEffect(() => {
     if (value !== undefined) {
@@ -34,25 +33,40 @@ export const Field = props => {
     }
 
     return () => {
-      unset(name);
+      unset(props.name);
     };
   }, []);
 
-  useEffect(() => onInvalid(error), [error]);
+  useEffect(() => {
+    if (error !== undefined) {
+      onInvalid(error);
+    }
+  }, [JSON.stringify(error)]);
 
-  const handleChange = after => {
-    onChange(after, value);
-    set(name, after);
-  };
+  const handleChange = useCallback(
+    after => {
+      set(name, after);
+      onChange(after, value);
+    },
+    [name, set, JSON.stringify(value)],
+  );
+
+  return { error, onChange: handleChange, onInvalid, value };
+};
+
+export const Field = props => {
+  const { children, isolate, ...input } = props;
+
+  const { error, onChange, value } = useField(input);
 
   return (isolate ? withProvider : identity)(
-    children({ error, onChange: handleChange, value }),
+    children({ error, onChange, value }),
   );
 };
 
 Field.defaultProps = {
   children() {},
-  isolate: false,
+  isolate: true,
   onChange() {},
   onInvalid() {},
 };
@@ -67,4 +81,6 @@ Field.propTypes = {
   value: PropTypes.any,
 };
 
-export default Field;
+export { useField };
+
+export default memo(Field);

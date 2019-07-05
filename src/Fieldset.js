@@ -1,36 +1,48 @@
-import React from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import defer from 'underscore-es/defer';
 
-import { Context } from './Form';
-import withField from './with/field';
+import { useField } from './Field';
+import { Provider } from './Form';
 
-const { Provider } = Context;
+export const Fieldset = props => {
+  const { children, legend, ...input } = props;
 
-export const Fieldset = input => {
-  const { children, error, legend, onChange, value, ...props } = input;
+  const { error, onChange, value } = useField(input);
 
-  const set = (name, val) => {
-    defer(() => {
-      const before = val;
-      const after = { ...before, [name]: val };
+  const set = useCallback(
+    (name, v) => {
+      defer(() => {
+        const after = { ...value, [name]: v };
 
-      onChange(after, before);
-    });
-  };
+        onChange(after, value);
+      });
+    },
+    [onChange, JSON.stringify(value)],
+  );
 
-  const unset = name => {
-    defer(() => {
-      const before = value;
-      const after = { ...before };
-      delete after[name];
+  const unset = useCallback(
+    name => {
+      defer(() => {
+        const after = { ...value };
+        delete after[name];
 
-      onChange(after, before);
-    });
-  };
+        onChange(after, value);
+      });
+    },
+    [onChange, JSON.stringify(value)],
+  );
+
+  const context = useMemo(() => ({ error, set, unset, value }), [
+    JSON.stringify(error),
+    set,
+    unset,
+    JSON.stringify(value),
+  ]);
 
   return (
-    <Provider value={{ error, set, unset, value }}>
+    <Provider value={context}>
       <fieldset {...props}>
         {legend && <legend>{legend}</legend>}
         {children}
@@ -56,4 +68,4 @@ Fieldset.propTypes = {
   value: PropTypes.object,
 };
 
-export default withField({})(Fieldset);
+export default memo(Fieldset);

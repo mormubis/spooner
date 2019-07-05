@@ -1,8 +1,9 @@
 import Form from './Form';
 
-export { default as Field } from './Field';
-
-export { default as withField } from './with/field';
+export { default as Error } from './Error';
+export { default as Field, useField } from './Field';
+export { default as Fieldset } from './Fieldset';
+export { default as Table } from './Table';
 
 export { Form };
 

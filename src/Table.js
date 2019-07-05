@@ -1,109 +1,129 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import defer from 'underscore-es/defer';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import memoize from 'underscore-es/memoize';
+import uuid from 'uuid/v4';
 
-import Field from './Field';
-import { Context } from './Form';
-import withField from './with/field';
+import Field, { useField } from './Field';
+import { Provider } from './Form';
 
-const { Provider } = Context;
+const Table = props => {
+  const { children, ...input } = props;
 
-function uuid() {
-  return Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
-}
+  const { error, onChange, value } = useField(input);
 
-export class Table extends PureComponent {
-  static propTypes = {
-    children: PropTypes.func,
-    error: PropTypes.array,
-    onChange: PropTypes.func,
-    value: PropTypes.array,
-  };
+  const keys = useRef(value.map(uuid));
+  const firstRender = useRef(true);
 
-  // eslint-disable-next-line
-  keys = this.props.value.map(uuid);
-
-  componentDidUpdate(prevProps) {
-    const { value } = this.props;
-
-    if (value !== prevProps.value) {
-      this.keys = value.map(uuid);
+  useEffect(() => {
+    if (!firstRender) {
+      keys.current = value.map(uuid);
     }
-  }
 
-  add = () => {
-    defer(() => {
-      const { onChange, value: before } = this.props;
-      const after = [...before, undefined];
+    firstRender.current = false;
+  }, [JSON.stringify(value)]);
 
-      onChange(after, before);
-    });
-  };
+  const add = useCallback(
+    defaultValue => {
+      defer(() => {
+        const after = [...value, defaultValue];
 
-  remove = key => () => {
-    defer(() => {
-      const { onChange, value: before } = this.props;
-      const index = this.keys.indexOf(key);
+        onChange(after, value);
+      });
+    },
+    [onChange, JSON.stringify(value)],
+  );
 
-      if (index !== -1) {
-        const after = [...before].splice(index, 1);
+  const remove = useCallback(
+    memoize(key => () => {
+      defer(() => {
+        const index = keys.current.indexOf(key);
 
-        onChange(after, before);
-      }
-    });
-  };
+        if (index !== -1) {
+          const after = [...value].splice(index, 1);
 
-  set = (name, value) => {
-    defer(() => {
-      const { onChange, value: before } = this.props;
-      const after = { ...before, [name]: value };
+          onChange(after, value);
+        }
+      });
+    }),
+    [onChange, JSON.stringify(value)],
+  );
 
-      onChange(after, before);
-    });
-  };
+  const set = useCallback(
+    (name, v) => {
+      defer(() => {
+        const index = keys.current.indexOf(name);
 
-  unset = name => {
-    defer(() => {
-      const { onChange, value: before } = this.props;
-      const after = { ...before };
-      delete after[name];
+        if (index !== -1) {
+          const after = [...value];
+          after[index] = v;
 
-      onChange(after, before);
-    });
-  };
+          onChange(after, value);
+        }
+      });
+    },
+    [keys.current, onChange, JSON.stringify(value)],
+  );
 
-  render() {
-    const { add, keys, remove, set, unset } = this;
-    const { children, error: _error, value: _value } = this.props;
+  const unset = useCallback(
+    name => {
+      defer(() => {
+        const index = keys.current.indexOf(name);
 
-    const [error, value] = keys.reduce(
-      ([__error, __value], key, index) => [
-        { ...__error, [key]: _error[index] },
-        { ...__value, [key]: _value[index] },
-      ],
-      [{}, {}],
-    );
+        if (index !== -1) {
+          const after = [...value];
+          delete after[index];
 
-    return (
-      <Provider value={{ error, set, unset, value }}>
-        {keys.map((key, index, array) => (
-          <Field key={key} name={key}>
-            {context =>
-              children({
-                ...context,
-                $add: add,
-                $remove: remove(key),
-                array,
-                index,
-              })
-            }
-          </Field>
-        ))}
-      </Provider>
-    );
-  }
-}
+          onChange(after, value);
+        }
+      });
+    },
+    [keys.current, onChange, JSON.stringify(value)],
+  );
 
-export default withField([], true)(Table);
+  const mapped = useMemo(
+    () =>
+      keys.reduce(
+        ([accError, accValue], key, index) => [
+          { ...accError, [key]: error[index] },
+          { ...accValue, [key]: value[index] },
+        ],
+        [{}, {}],
+      ),
+    [JSON.stringify(error), JSON.stringify(value)],
+  );
+
+  const context = useMemo(
+    () => ({ error: mapped[0], set, unset, value: mapped[1] }),
+    [mapped, set, unset],
+  );
+
+  return (
+    <Provider value={context}>
+      {keys.map((key, index, array) => (
+        <Field key={key} name={key}>
+          {field =>
+            children({
+              ...field,
+              $add: add,
+              $remove: remove(key),
+              array,
+              index,
+            })
+          }
+        </Field>
+      ))}
+    </Provider>
+  );
+};
+
+Table.propTypes = {
+  children: PropTypes.func,
+  error: PropTypes.array,
+  onChange: PropTypes.func,
+  value: PropTypes.array,
+};
+
+export default memo(Table);
