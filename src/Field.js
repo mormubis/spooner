@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useDebugValue, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import omit from 'underscore-es/omit';
 
 import { useForm, Provider } from './Form';
 
@@ -51,7 +53,9 @@ const useField = ({ name, ...props }) => {
     [name, set, JSON.stringify(value)],
   );
 
-  return { error, onChange: handleChange, onInvalid, value };
+  const fieldProps = omit(props, 'error', 'onChange', 'onInvalid', 'value');
+
+  return { error, onChange: handleChange, onInvalid, value, ...fieldProps };
 };
 
 export const Field = props => {

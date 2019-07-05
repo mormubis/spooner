@@ -12,7 +12,7 @@ import { Provider } from './Form';
 const Table = props => {
   const { children, ...input } = props;
 
-  const { error, onChange, value } = useField(input);
+  const { error = [], onChange = () => {}, value = [] } = useField(input);
 
   const keys = useRef(value.map(uuid));
   const firstRender = useRef(true);

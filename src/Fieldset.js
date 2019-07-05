@@ -9,7 +9,12 @@ import { Provider } from './Form';
 export const Fieldset = props => {
   const { children, legend, ...input } = props;
 
-  const { error, onChange, value } = useField(input);
+  const {
+    error = {},
+    onChange = () => {},
+    value = {},
+    ...fieldProps
+  } = useField(input);
 
   const set = useCallback(
     (name, v) => {
@@ -43,7 +48,7 @@ export const Fieldset = props => {
 
   return (
     <Provider value={context}>
-      <fieldset {...props}>
+      <fieldset {...fieldProps}>
         {legend && <legend>{legend}</legend>}
         {children}
       </fieldset>
