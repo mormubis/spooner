@@ -1,58 +1,60 @@
+import external from 'rollup-plugin-auto-external';
 import babel from 'rollup-plugin-babel';
 import minify from 'rollup-plugin-babel-minify';
-import commonjs from 'rollup-plugin-commonjs';
+import cjs from 'rollup-plugin-commonjs';
 import del from 'rollup-plugin-delete';
 import resolve from 'rollup-plugin-node-resolve';
-import external from 'rollup-plugin-peer-deps-external';
 import replace from 'rollup-plugin-replace';
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot';
 import visualizer from 'rollup-plugin-visualizer';
 
-import pkg from './package.json';
-
-const env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV || 'development';
+const isProduction = env === 'production';
 
 const config = {
   input: 'src/index.js',
   output: [
     {
       exports: 'named',
-      file: pkg.main,
+      file: `./dist/cjs/spooner.${env}.js`,
       format: 'cjs',
       name: 'spooner',
-      sourcemap: true,
+      sourcemap: env !== 'production',
     },
     {
-      file: pkg.module,
+      file: `./dist/es/spooner.${env}.js`,
       format: 'es',
-      sourcemap: true,
+      sourcemap: env !== 'production',
     },
   ],
   plugins: [
-    external({ includeDependencies: true }),
-    del({
-      targets: './dist/*',
-    }),
+    external(),
+    ...(isProduction
+      ? [
+          del({
+            targets: ['./dist/'],
+          }),
+        ]
+      : []),
     babel({
       exclude: '**/node_modules/**',
-      // runtimeHelpers: true,
+      runtimeHelpers: true,
     }),
     resolve(),
     replace({
       'process.env.NODE_ENV': JSON.stringify(env),
     }),
-    commonjs(),
-    visualizer({ filename: './statistics.html', sourcemap: true }),
+    cjs(),
+    ...(isProduction
+      ? [
+          sizeSnapshot(),
+          minify({
+            comments: false,
+          }),
+        ]
+      : []),
+    visualizer({ filename: './statistics.html' }),
   ],
 };
-
-if (env === 'production') {
-  config.plugins.push(
-    sizeSnapshot(),
-    minify({
-      comments: false,
-    }),
-  );
-}
 
 export default config;
