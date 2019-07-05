@@ -1,52 +1,47 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 
-import withField from '../with/field';
+import { useField } from '../Field';
 
-export class Input extends Component {
-  static defaultProps = {
-    onBlur() {},
-    onChange() {},
-    onFocus() {},
-  };
+const Input = props => {
+  const {
+    error,
+    onBlur = () => {},
+    onChange = () => {},
+    onFocus = () => {},
+    type,
+    value,
+    ...fieldProps
+  } = useField(props);
 
-  static propTypes = {
-    onBlur: PropTypes.func,
-    onChange: PropTypes.func,
-    onFocus: PropTypes.func,
-  };
-
-  handleBlur = () => {
-    const { onBlur } = this.props;
-
+  const handleBlur = () => {
     onBlur();
   };
 
-  handleChange = event => {
-    const { onChange } = this.props;
+  const handleChange = event => {
+    const { value: rvalue } = event.target;
 
     event.stopPropagation();
-    onChange(event.target.value);
+
+    onChange(rvalue);
   };
 
-  handleFocus = () => {
-    const { onFocus } = this.props;
-
+  const handleFocus = () => {
     onFocus();
   };
 
-  render() {
-    const { ...props } = this.props;
+  return (
+    <input
+      {...fieldProps}
+      checked={value}
+      data-error={error}
+      data-value={value}
+      onBlur={handleBlur}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onInvalid={undefined}
+      type={type || 'text'}
+    />
+  );
+};
 
-    return (
-      <input
-        {...props}
-        onBlur={this.handleBlur}
-        onChange={this.handleChange}
-        onFocus={this.handleFocus}
-      />
-    );
-  }
-}
-
-export default withField('')(Input);
+export default Input;

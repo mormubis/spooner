@@ -1,42 +1,46 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 
-import withField from '../with/field';
+import { useField } from '../Field';
 
-export class Checkbox extends Component {
-  static defaultProps = {
-    onBlur() {},
-    onChange() {},
-    onFocus() {},
+const Checkbox = props => {
+  const {
+    error,
+    onBlur = () => {},
+    onChange = () => {},
+    onFocus = () => {},
+    value,
+    ...fieldProps
+  } = useField(props);
+
+  const handleBlur = () => {
+    onBlur();
   };
 
-  static propTypes = {
-    onBlur: PropTypes.func,
-    onChange: PropTypes.func,
-    onFocus: PropTypes.func,
-    value: PropTypes.any,
-  };
-
-  handleChange = event => {
-    const { onChange } = this.props;
+  const handleChange = event => {
+    const { checked } = event.target;
 
     event.stopPropagation();
 
-    onChange(event.target.checked);
+    onChange(checked);
   };
 
-  render() {
-    const { value, ...props } = this.props;
+  const handleFocus = () => {
+    onFocus();
+  };
 
-    return (
-      <input
-        {...props}
-        checked={value}
-        onChange={this.handleChange}
-        type="checkbox"
-      />
-    );
-  }
-}
+  return (
+    <input
+      {...fieldProps}
+      checked={value}
+      data-error={error}
+      data-value={value}
+      onBlur={handleBlur}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onInvalid={undefined}
+      type="checkbox"
+    />
+  );
+};
 
-export default withField(false)(Checkbox);
+export default Checkbox;

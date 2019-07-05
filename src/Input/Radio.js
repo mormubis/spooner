@@ -1,42 +1,47 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 
-import withField from '../with/field';
+import { useField } from '../Field';
 
-export class Radio extends Component {
-  static defaultProps = {
-    onBlur() {},
-    onChange() {},
-    onFocus() {},
+const Radio = props => {
+  const {
+    content,
+    error,
+    onBlur = () => {},
+    onChange = () => {},
+    onFocus = () => {},
+    value,
+    ...fieldProps
+  } = useField(props);
+
+  const handleBlur = () => {
+    onBlur();
   };
 
-  static propTypes = {
-    content: PropTypes.any.isRequired,
-    onBlur: PropTypes.func,
-    onChange: PropTypes.func,
-    onFocus: PropTypes.func,
-    value: PropTypes.any,
-  };
-
-  handleChange = event => {
-    const { content, onChange, value } = this.props;
+  const handleChange = event => {
+    const { checked } = event.target;
 
     event.stopPropagation();
 
-    onChange(event.target.checked ? content : value);
+    onChange(checked ? content : value);
   };
 
-  render() {
-    const { content, value, ...props } = this.props;
+  const handleFocus = () => {
+    onFocus();
+  };
 
-    return (
-      <input
-        {...props}
-        checked={content === value}
-        onChange={this.handleChange}
-      />
-    );
-  }
-}
+  return (
+    <input
+      {...fieldProps}
+      checked={value}
+      data-error={error}
+      data-value={value}
+      onBlur={handleBlur}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onInvalid={undefined}
+      type="radio"
+    />
+  );
+};
 
-export default withField()(Radio);
+export default Radio;
