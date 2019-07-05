@@ -8,8 +8,8 @@ const Input = props => {
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
-    type,
-    value,
+    type = 'text',
+    value = '',
     ...fieldProps
   } = useField(props);
 
@@ -32,14 +32,14 @@ const Input = props => {
   return (
     <input
       {...fieldProps}
-      checked={value}
-      data-error={error}
+      data-error={!!error}
       data-value={value}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
       onInvalid={undefined}
-      type={type || 'text'}
+      type={type}
+      value={value}
     />
   );
 };

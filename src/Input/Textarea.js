@@ -8,7 +8,7 @@ const Textarea = props => {
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
-    value,
+    value = '',
     ...fieldProps
   } = useField(props);
 
@@ -31,12 +31,13 @@ const Textarea = props => {
   return (
     <textarea
       {...fieldProps}
-      data-error={error}
+      data-error={!!error}
       data-value={value}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
       onInvalid={undefined}
+      value={value}
     />
   );
 };

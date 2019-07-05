@@ -73,7 +73,7 @@ const Select = props => {
   return (
     <select
       {...fieldProps}
-      data-error={error}
+      data-error={!!error}
       data-value={value}
       multiple={multiple}
       onBlur={handleBlur}

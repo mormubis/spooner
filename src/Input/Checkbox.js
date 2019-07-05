@@ -8,7 +8,7 @@ const Checkbox = props => {
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
-    value,
+    value = false,
     ...fieldProps
   } = useField(props);
 
@@ -32,7 +32,7 @@ const Checkbox = props => {
     <input
       {...fieldProps}
       checked={value}
-      data-error={error}
+      data-error={!!error}
       data-value={value}
       onBlur={handleBlur}
       onChange={handleChange}

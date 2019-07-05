@@ -33,7 +33,7 @@ const Radio = props => {
     <input
       {...fieldProps}
       checked={value}
-      data-error={error}
+      data-error={!!error}
       data-value={value}
       onBlur={handleBlur}
       onChange={handleChange}
