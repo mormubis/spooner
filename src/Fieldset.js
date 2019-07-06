@@ -4,47 +4,44 @@ import PropTypes from 'prop-types';
 import defer from 'underscore-es/defer';
 
 import { useField } from './Field';
-import { Provider } from './Form';
+import { Provider, useStatus } from './Form';
 
 export const Fieldset = props => {
   const { children, legend, ...input } = props;
 
-  const {
-    error = {},
-    onChange = () => {},
-    value = {},
-    ...fieldProps
-  } = useField(input);
+  const { onChange = () => {}, ...fieldProps } = useField(input);
+
+  const status = useStatus(fieldProps);
 
   const set = useCallback(
-    (name, v) => {
+    (name, value) => {
       defer(() => {
-        const after = { ...value, [name]: v };
+        const before = status.value;
+        const after = { ...before, [name]: value };
 
-        onChange(after, value);
+        onChange(after, before);
       });
     },
-    [onChange, JSON.stringify(value)],
+    [onChange],
   );
 
   const unset = useCallback(
     name => {
       defer(() => {
-        const after = { ...value };
+        const before = status.value;
+        const after = { ...before };
         delete after[name];
 
-        onChange(after, value);
+        onChange(after, before);
       });
     },
-    [onChange, JSON.stringify(value)],
+    [onChange],
   );
 
-  const context = useMemo(() => ({ error, set, unset, value }), [
-    JSON.stringify(error),
-    set,
-    unset,
-    JSON.stringify(value),
-  ]);
+  const context = useMemo(
+    () => ({ error: status.error, set, unset, value: status.value }),
+    [JSON.stringify(status.error), set, unset, JSON.stringify(status.value)],
+  );
 
   return (
     <Provider value={context}>

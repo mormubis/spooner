@@ -7,33 +7,37 @@ import memoize from 'underscore-es/memoize';
 import uuid from 'uuid/v4';
 
 import Field, { useField } from './Field';
-import { Provider } from './Form';
+import { Provider, useStatus } from './Form';
 
-const Table = props => {
-  const { children, ...input } = props;
+const Table = ({ children, ...props }) => {
+  const { onChange = () => {}, ...input } = useField(props);
 
-  const { error = [], onChange = () => {}, value = [] } = useField(input);
+  const status = useStatus({
+    error: input.error || [],
+    value: input.value || [],
+  });
 
-  const keys = useRef(value.map(uuid));
+  const keys = useRef(status.value.map(uuid));
   const firstRender = useRef(true);
 
   useEffect(() => {
     if (!firstRender) {
-      keys.current = value.map(uuid);
+      keys.current = status.value.map(uuid);
     }
 
     firstRender.current = false;
-  }, [JSON.stringify(value)]);
+  }, [JSON.stringify(status.value)]);
 
   const add = useCallback(
-    defaultValue => {
+    initial => {
       defer(() => {
-        const after = [...value, defaultValue];
+        const before = status.value;
+        const after = [...before, initial];
 
-        onChange(after, value);
+        onChange(after, before);
       });
     },
-    [onChange, JSON.stringify(value)],
+    [onChange],
   );
 
   const remove = useCallback(
@@ -42,29 +46,31 @@ const Table = props => {
         const index = keys.current.indexOf(key);
 
         if (index !== -1) {
-          const after = [...value].splice(index, 1);
+          const before = status.value;
+          const after = [...before].splice(index, 1);
 
-          onChange(after, value);
+          onChange(after, before);
         }
       });
     }),
-    [onChange, JSON.stringify(value)],
+    [onChange],
   );
 
   const set = useCallback(
-    (name, v) => {
+    (name, value) => {
       defer(() => {
         const index = keys.current.indexOf(name);
 
         if (index !== -1) {
-          const after = [...value];
-          after[index] = v;
+          const before = status.value;
+          const after = [...before];
+          after[index] = value;
 
-          onChange(after, value);
+          onChange(after, before);
         }
       });
     },
-    [keys.current, onChange, JSON.stringify(value)],
+    [keys.current, onChange],
   );
 
   const unset = useCallback(
@@ -73,26 +79,27 @@ const Table = props => {
         const index = keys.current.indexOf(name);
 
         if (index !== -1) {
-          const after = [...value];
+          const before = status.value;
+          const after = [...before];
           delete after[index];
 
-          onChange(after, value);
+          onChange(after, before);
         }
       });
     },
-    [keys.current, onChange, JSON.stringify(value)],
+    [keys.current, onChange],
   );
 
   const mapped = useMemo(
     () =>
       keys.reduce(
-        ([accError, accValue], key, index) => [
-          { ...accError, [key]: error[index] },
-          { ...accValue, [key]: value[index] },
+        ([error, value], key, index) => [
+          { ...error, [key]: status.error[index] },
+          { ...value, [key]: status.value[index] },
         ],
         [{}, {}],
       ),
-    [JSON.stringify(error), JSON.stringify(value)],
+    [JSON.stringify(status.error), JSON.stringify(status.value)],
   );
 
   const context = useMemo(

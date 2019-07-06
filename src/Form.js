@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useMemo,
+  useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
@@ -27,6 +28,24 @@ const useForm = () => {
   return useContext(Context);
 };
 
+const useStatus = nextState => {
+  const state = useRef({ error: {}, value: {} });
+
+  state.current = {
+    error: nextState.error || {},
+    value: nextState.value || {},
+  };
+
+  return new Proxy(
+    {},
+    {
+      get(target, prop) {
+        return state.current[prop];
+      },
+    },
+  );
+};
+
 const Form = props => {
   const { children, constraint, onInvalid, onSubmit, ...formProps } = omit(
     props,
@@ -41,28 +60,30 @@ const Form = props => {
     value: 'onChange',
   });
 
+  const status = useStatus(input);
+
   const handleChange = useCallback(
     (name, after, before) => {
       onChange(after, before);
 
-      const error = { ...input.error };
+      const error = { ...status.error };
       delete error[name];
 
-      if (JSON.stringify(error) !== JSON.stringify(input.error)) {
+      if (JSON.stringify(error) !== JSON.stringify(status.error)) {
         onErrorChange(error);
       }
     },
-    [JSON.stringify(input.error), onChange, onErrorChange],
+    [onChange, onErrorChange],
   );
 
   const handleSubmit = event => {
     event.preventDefault();
 
-    const error = validate(input.value, constraint);
+    const error = validate(status.value, constraint);
     const isValid = Object.keys(error).length === 0;
 
     if (isValid) {
-      onSubmit(input.value);
+      onSubmit(status.value);
     } else {
       onErrorChange(error);
 
@@ -73,31 +94,31 @@ const Form = props => {
   const set = useCallback(
     (name, value) => {
       defer(() => {
-        const before = value;
+        const before = status.value;
         const after = { ...before, [name]: value };
 
         handleChange(name, after, before);
       });
     },
-    [handleChange, JSON.stringify(input.value)],
+    [handleChange],
   );
 
   const unset = useCallback(
     name => {
       defer(() => {
-        const before = input.value;
+        const before = status.value;
         const after = { ...before };
         delete after[name];
 
         handleChange(name, after, before);
       });
     },
-    [handleChange, JSON.stringify(input.value)],
+    [handleChange],
   );
 
   const context = useMemo(
-    () => ({ error: input.error, set, unset, value: input.value }),
-    [JSON.stringify(input.error), set, unset, JSON.stringify(input.value)],
+    () => ({ error: status.error, set, unset, value: status.value }),
+    [JSON.stringify(status.error), set, unset, JSON.stringify(status.value)],
   );
 
   return (
@@ -108,12 +129,10 @@ const Form = props => {
 };
 
 Form.defaultProps = {
-  error: {},
   onChange() {},
   onErrorChange() {},
   onInvalid() {},
   onSubmit() {},
-  value: {},
 };
 
 Form.propTypes = {
@@ -130,6 +149,6 @@ Form.propTypes = {
   value: PropTypes.object,
 };
 
-export { useForm, Provider };
+export { Provider, useForm, useStatus };
 
 export default memo(Form);

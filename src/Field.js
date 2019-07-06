@@ -23,14 +23,14 @@ const useField = ({ name, ...props }) => {
   });
 
   const [error, value] = [
-    input.error !== undefined ? input.error : state.error[input.name],
-    input.value !== undefined ? input.value : state.value[input.name],
+    input.error !== undefined ? input.error : state.error[name],
+    input.value !== undefined ? input.value : state.value[name],
   ];
 
   useDebugValue({ error, value });
 
   useEffect(() => {
-    if (value !== undefined) {
+    if (value !== undefined && value !== state.value[name]) {
       set(name, value);
     }
 
@@ -47,8 +47,11 @@ const useField = ({ name, ...props }) => {
 
   const handleChange = useCallback(
     after => {
+      const before = value;
+
       set(name, after);
-      onChange(after, value);
+
+      onChange(after, before);
     },
     [name, set, JSON.stringify(value)],
   );
