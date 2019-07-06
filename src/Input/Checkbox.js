@@ -37,7 +37,6 @@ const Checkbox = props => {
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
-      onInvalid={undefined}
       type="checkbox"
     />
   );

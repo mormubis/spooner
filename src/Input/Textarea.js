@@ -36,7 +36,6 @@ const Textarea = props => {
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
-      onInvalid={undefined}
       value={value}
     />
   );

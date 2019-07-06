@@ -58,7 +58,7 @@ const useField = ({ name, ...props }) => {
 
   const fieldProps = omit(props, 'error', 'onChange', 'onInvalid', 'value');
 
-  return { error, onChange: handleChange, onInvalid, value, ...fieldProps };
+  return { error, onChange: handleChange, value, ...fieldProps };
 };
 
 export const Field = props => {

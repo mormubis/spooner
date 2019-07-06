@@ -38,7 +38,6 @@ const File = props => {
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
-      onInvalid={undefined}
       type="file"
     />
   );

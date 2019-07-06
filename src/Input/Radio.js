@@ -32,13 +32,12 @@ const Radio = props => {
   return (
     <input
       {...fieldProps}
-      checked={value}
+      checked={content === value}
       data-error={!!error}
       data-value={value}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
-      onInvalid={undefined}
       type="radio"
     />
   );
