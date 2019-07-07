@@ -17,14 +17,28 @@ function withProvider(children) {
 const useField = ({ name, ...props }) => {
   const { set, unset, ...state } = useForm();
 
-  const { onInvalid, onChange, ...input } = useUncontrolled(props, {
+  const {
+    onInvalid = () => {},
+    onChange = () => {},
+    ...input
+  } = useUncontrolled(props, {
     error: 'onInvalid',
     value: 'onChange',
   });
 
+  const controlled = {
+    error: props.error !== undefined,
+    value: props.value !== undefined,
+  };
+
+  const propagated = {
+    error: state.error[name] !== undefined,
+    value: state.value[name] !== undefined,
+  };
+
   const [error, value] = [
-    input.error !== undefined ? input.error : state.error[name],
-    input.value !== undefined ? input.value : state.value[name],
+    propagated.error && !controlled.error ? state.error[name] : input.error,
+    propagated.value && !controlled.value ? state.value[name] : input.value,
   ];
 
   useDebugValue({ error, value });
