@@ -30,7 +30,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-hot-loader": "^4.12.3",
+    "react-hot-loader": "^4.12.5",
     "regenerator-runtime": "^0.13.2",
     "rollup": "^1.16.6",
     "rollup-plugin-auto-external": "^2.0.0",
