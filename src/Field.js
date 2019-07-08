@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
 import omit from 'underscore-es/omit';
 
-import { useForm, Provider } from './Form';
+import Blocker from './Blocker';
+import { useForm } from './Form';
 
 function identity(children) {
   return children;
 }
 
 function withProvider(children) {
-  return <Provider>{children}</Provider>;
+  return <Blocker>{children}</Blocker>;
 }
 
 const useField = ({ name, ...props }) => {
