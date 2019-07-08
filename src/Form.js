@@ -8,9 +8,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import defer from 'underscore-es/defer';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import omit from 'underscore-es/omit';
 
 import validate from './validation';

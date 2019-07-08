@@ -1,8 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import defer from 'underscore-es/defer';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import memoize from 'underscore-es/memoize';
 import uuid from 'uuid/v4';
 

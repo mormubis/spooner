@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import defer from 'underscore-es/defer';
 
 import { useField } from './Field';
