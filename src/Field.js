@@ -18,28 +18,21 @@ const useField = ({ name, ...props }) => {
   const { set, unset, ...state } = useForm();
 
   const {
-    onInvalid = () => {},
+    error,
     onChange = () => {},
-    ...input
-  } = useUncontrolled(props, {
-    error: 'onInvalid',
-    value: 'onChange',
-  });
-
-  const controlled = {
-    error: props.error !== undefined,
-    value: props.value !== undefined,
-  };
-
-  const propagated = {
-    error: state.error[name] !== undefined,
-    value: state.value[name] !== undefined,
-  };
-
-  const [error, value] = [
-    propagated.error && !controlled.error ? state.error[name] : input.error,
-    propagated.value && !controlled.value ? state.value[name] : input.value,
-  ];
+    onInvalid = () => {},
+    value,
+  } = useUncontrolled(
+    {
+      ...props,
+      error: props.error !== undefined ? props.error : state.error[name],
+      value: props.value !== undefined ? props.value : state.value[name],
+    },
+    {
+      error: 'onInvalid',
+      value: 'onChange',
+    },
+  );
 
   useDebugValue({ error, value });
 
