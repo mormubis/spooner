@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Select = props => {
+const Select = ({ children, ...props }) => {
   const {
-    children,
     error,
     multiple = false,
     onBlur = () => {},
@@ -63,12 +63,12 @@ const Select = props => {
   };
 
   useEffect(() => {
-    const after = getValue(value);
+    if (value === undefined) {
+      const after = getValue(value);
 
-    if (JSON.stringify(after) !== JSON.stringify(value)) {
       onChange(after);
     }
-  }, [JSON.stringify(value)]);
+  }, []);
 
   return (
     <select
@@ -85,6 +85,13 @@ const Select = props => {
       {children}
     </select>
   );
+};
+
+Select.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
 };
 
 export default Select;
