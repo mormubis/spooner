@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
-import defer from 'underscore-es/defer';
 import omit from 'underscore-es/omit';
 
 import validate from './validation';
@@ -91,25 +90,21 @@ const Form = props => {
 
   const set = useCallback(
     (name, value) => {
-      defer(() => {
-        const before = status.value;
-        const after = { ...before, [name]: value };
+      const before = status.value;
+      const after = { ...before, [name]: value };
 
-        handleChange(name, after, before);
-      });
+      handleChange(name, after, before);
     },
     [handleChange],
   );
 
   const unset = useCallback(
     name => {
-      defer(() => {
-        const before = status.value;
-        const after = { ...before };
-        delete after[name];
+      const before = status.value;
+      const after = { ...before };
+      delete after[name];
 
-        handleChange(name, after, before);
-      });
+      handleChange(name, after, before);
     },
     [handleChange],
   );

@@ -40,50 +40,44 @@ const Table = ({ children, ...props }) => {
 
   const remove = useCallback(
     memoize(key => () => {
-      defer(() => {
-        const index = keys.current.indexOf(key);
+      const index = keys.current.indexOf(key);
 
-        if (index !== -1) {
-          const before = status.value;
-          const after = [...before].splice(index, 1);
+      if (index !== -1) {
+        const before = status.value;
+        const after = [...before].splice(index, 1);
 
-          onChange(after, before);
-        }
-      });
+        onChange(after, before);
+      }
     }),
     [onChange],
   );
 
   const set = useCallback(
     (name, value) => {
-      defer(() => {
-        const index = keys.current.indexOf(name);
+      const index = keys.current.indexOf(name);
 
-        if (index !== -1) {
-          const before = status.value;
-          const after = [...before];
-          after[index] = value;
+      if (index !== -1) {
+        const before = status.value;
+        const after = [...before];
+        after[index] = value;
 
-          onChange(after, before);
-        }
-      });
+        onChange(after, before);
+      }
     },
     [keys.current, onChange],
   );
 
   const unset = useCallback(
     name => {
-      defer(() => {
-        const index = keys.current.indexOf(name);
+      const index = keys.current.indexOf(name);
 
-        if (index !== -1) {
-          const before = status.value;
-          const after = [...before];
-          delete after[index];
+      if (index !== -1) {
+        const before = status.value;
+        const after = [...before];
+        delete after[index];
 
-          onChange(after, before);
-        }
-      });
+        onChange(after, before);
+      }
     },
     [keys.current, onChange],
   );

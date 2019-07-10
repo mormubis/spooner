@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import defer from 'underscore-es/defer';
 
 import { useField } from './Field';
 import { Provider, useStatus } from './Form';
@@ -14,25 +13,21 @@ export const Fieldset = props => {
 
   const set = useCallback(
     (name, value) => {
-      defer(() => {
-        const before = status.value;
-        const after = { ...before, [name]: value };
+      const before = status.value;
+      const after = { ...before, [name]: value };
 
-        onChange(after, before);
-      });
+      onChange(after, before);
     },
     [onChange],
   );
 
   const unset = useCallback(
     name => {
-      defer(() => {
-        const before = status.value;
-        const after = { ...before };
-        delete after[name];
+      const before = status.value;
+      const after = { ...before };
+      delete after[name];
 
-        onChange(after, before);
-      });
+      onChange(after, before);
     },
     [onChange],
   );
