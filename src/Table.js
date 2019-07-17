@@ -15,12 +15,12 @@ const Table = ({ children, ...props }) => {
     value: input.value || [],
   });
 
-  const keys = useRef(status.value.map(uuid));
+  const keys = useRef(status.value.map(() => uuid()));
   const firstRender = useRef(true);
 
   useEffect(() => {
     if (!firstRender) {
-      keys.current = status.value.map(uuid);
+      keys.current = status.value.map(() => uuid());
     }
 
     firstRender.current = false;
@@ -84,7 +84,7 @@ const Table = ({ children, ...props }) => {
 
   const mapped = useMemo(
     () =>
-      keys.reduce(
+      keys.current.reduce(
         ([error, value], key, index) => [
           { ...error, [key]: status.error[index] },
           { ...value, [key]: status.value[index] },
@@ -101,7 +101,7 @@ const Table = ({ children, ...props }) => {
 
   return (
     <Provider value={context}>
-      {keys.map((key, index, array) => (
+      {keys.current.map((key, index, array) => (
         <Field key={key} name={key}>
           {field =>
             children({
