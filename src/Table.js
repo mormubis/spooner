@@ -41,7 +41,8 @@ const Table = ({ children, ...props }) => {
 
       if (index !== -1) {
         const before = status.value;
-        const after = [...before].splice(index, 1);
+        const after = [...before];
+        before.splice(index, 1);
 
         onChange(after, before);
       }
