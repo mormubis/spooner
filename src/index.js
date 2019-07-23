@@ -1,4 +1,4 @@
-import Form from './Form';
+import Form, { useValue } from './Form';
 
 export { default as Blocker } from './Blocker';
 export { default as Error } from './Error';
@@ -8,6 +8,6 @@ export { default as Table } from './Table';
 
 export * from './Input';
 
-export { Form };
+export { Form, useValue };
 
 export default Form;

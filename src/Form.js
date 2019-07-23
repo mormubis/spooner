@@ -25,6 +25,12 @@ const useForm = () => {
   return useContext(Context);
 };
 
+const useValue = name => {
+  const { set, unset, ...state } = useForm();
+
+  return { error: state.error[name], value: state.value[name] };
+};
+
 const useStatus = nextState => {
   const state = useRef({ error: {}, value: {} });
 
@@ -142,6 +148,6 @@ Form.propTypes = {
   value: PropTypes.object,
 };
 
-export { Provider, useForm, useStatus };
+export { Provider, useForm, useStatus, useValue };
 
 export default memo(Form);
