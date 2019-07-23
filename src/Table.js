@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import defer from 'underscore-es/defer';
 import memoize from 'underscore-es/memoize';
 import uuid from 'uuid/v4';
 
@@ -28,12 +27,10 @@ const Table = ({ children, ...props }) => {
 
   const add = useCallback(
     initial => {
-      defer(() => {
-        const before = status.value;
-        const after = [...before, initial];
+      const before = status.value;
+      const after = [...before, initial];
 
-        onChange(after, before);
-      });
+      onChange(after, before);
     },
     [onChange],
   );
