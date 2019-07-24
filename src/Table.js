@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import memoize from 'underscore-es/memoize';
 import uuid from 'uuid/v4';
@@ -14,21 +14,20 @@ const Table = ({ children, ...props }) => {
     value: input.value || [],
   });
 
+  const prevValue = useRef(status.value);
   const keys = useRef(status.value.map(() => uuid()));
-  const firstRender = useRef(true);
 
-  useEffect(() => {
-    if (!firstRender) {
-      keys.current = status.value.map(() => uuid());
-    }
-
-    firstRender.current = false;
-  }, [JSON.stringify(status.value)]);
+  if (JSON.stringify(prevValue.current) !== JSON.stringify(status.value)) {
+    keys.current = status.value.map(() => uuid());
+  }
 
   const add = useCallback(
     initial => {
       const before = status.value;
       const after = [...before, initial];
+
+      prevValue.current = [...after];
+      keys.current.push(uuid());
 
       onChange(after, before);
     },
@@ -42,7 +41,10 @@ const Table = ({ children, ...props }) => {
       if (index !== -1) {
         const before = status.value;
         const after = [...before];
-        before.splice(index, 1);
+        after.splice(index, 1);
+
+        prevValue.current = [...after];
+        keys.current = keys.current.filter((_, idx) => idx !== index);
 
         onChange(after, before);
       }
@@ -59,10 +61,12 @@ const Table = ({ children, ...props }) => {
         const after = [...before];
         after[index] = value;
 
+        prevValue.current = [...after];
+
         onChange(after, before);
       }
     },
-    [keys.current, onChange],
+    [onChange],
   );
 
   const unset = useCallback(
@@ -74,10 +78,12 @@ const Table = ({ children, ...props }) => {
         const after = [...before];
         delete after[index];
 
+        prevValue.current = [...after];
+
         onChange(after, before);
       }
     },
-    [keys.current, onChange],
+    [onChange],
   );
 
   const mapped = useMemo(
