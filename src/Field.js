@@ -63,9 +63,9 @@ const useField = ({ name, ...props }) => {
     [name, set, JSON.stringify(value)],
   );
 
-  const fieldProps = omit(props, 'error', 'onChange', 'onInvalid', 'value');
+  const rest = omit(props, 'error', 'onChange', 'onInvalid', 'value');
 
-  return { error, name, onChange: handleChange, value, ...fieldProps };
+  return { ...rest, error, name, onChange: handleChange, value };
 };
 
 export const Field = props => {
