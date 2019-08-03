@@ -56,6 +56,7 @@ Fieldset.propTypes = {
     PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
   ]),
   legend: PropTypes.string,
+  name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   value: PropTypes.object,
 };
