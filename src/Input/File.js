@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const File = props => {
+const File = ({ forwardedRef, ...props }) => {
   const {
     error,
     multiple = false,
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
-    value,
     ...fieldProps
   } = useField(props);
 
@@ -32,15 +32,30 @@ const File = props => {
   return (
     <input
       {...fieldProps}
-      checked={value}
       data-error={!!error}
-      data-value={value}
+      data-multiple={multiple}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
+      ref={forwardedRef}
       type="file"
     />
   );
 };
 
-export default File;
+File.propTypes = {
+  error: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+  ]),
+  multiple: PropTypes.bool,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  type: PropTypes.string,
+};
+
+export default forwardRef((props, ref) => (
+  <File {...props} forwardedRef={ref} />
+));

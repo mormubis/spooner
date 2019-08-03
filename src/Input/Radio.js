@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Radio = props => {
+const Radio = ({ content, forwardedRef, ...props }) => {
   const {
-    content,
     error,
     onBlur = () => {},
     onChange = () => {},
@@ -33,14 +33,32 @@ const Radio = props => {
     <input
       {...fieldProps}
       checked={content === value}
+      data-checked={content === value}
       data-error={!!error}
       data-value={value}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
+      ref={forwardedRef}
       type="radio"
     />
   );
 };
 
-export default Radio;
+Radio.propTypes = {
+  content: PropTypes.string,
+  error: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+  ]),
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  type: PropTypes.string,
+  value: PropTypes.string,
+};
+
+export default forwardRef((props, ref) => (
+  <Radio {...props} forwardedRef={ref} />
+));

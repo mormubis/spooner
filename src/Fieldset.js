@@ -1,13 +1,11 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { forwardRef, memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { useField } from './Field';
 import { Provider, useStatus } from './Form';
 
-export const Fieldset = props => {
-  const { children, legend, ...input } = props;
-
-  const { onChange = () => {}, ...fieldProps } = useField(input);
+export const Fieldset = ({ children, forwardedRef, legend, ...props }) => {
+  const { onChange = () => {}, ...fieldProps } = useField(props);
 
   const status = useStatus(fieldProps);
 
@@ -39,16 +37,12 @@ export const Fieldset = props => {
 
   return (
     <Provider value={context}>
-      <fieldset {...fieldProps}>
+      <fieldset {...fieldProps} ref={forwardedRef}>
         {legend && <legend>{legend}</legend>}
         {children}
       </fieldset>
     </Provider>
   );
-};
-
-Fieldset.defaultProps = {
-  onChange() {},
 };
 
 Fieldset.propTypes = {
@@ -57,9 +51,15 @@ Fieldset.propTypes = {
     PropTypes.node,
   ]),
   error: PropTypes.object,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+  ]),
   legend: PropTypes.string,
   onChange: PropTypes.func,
   value: PropTypes.object,
 };
 
-export default memo(Fieldset);
+export default memo(
+  forwardRef((props, ref) => <Fieldset {...props} forwardedRef={ref} />),
+);

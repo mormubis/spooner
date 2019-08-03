@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  forwardRef,
   memo,
   useCallback,
   useContext,
@@ -50,13 +51,13 @@ const useStatus = nextState => {
 };
 
 const Form = props => {
-  const { children, constraint, onInvalid, onSubmit, ...formProps } = omit(
-    props,
-    'error',
-    'onChange',
-    'onErrorChange',
-    'value',
-  );
+  const {
+    children,
+    constraint,
+    onInvalid = () => {},
+    onSubmit = () => {},
+    ...formProps
+  } = omit(props, 'error', 'onChange', 'onErrorChange', 'value');
 
   const { onChange, onErrorChange, ...input } = useUncontrolled(props, {
     error: 'onErrorChange',
@@ -127,13 +128,6 @@ const Form = props => {
   );
 };
 
-Form.defaultProps = {
-  onChange() {},
-  onErrorChange() {},
-  onInvalid() {},
-  onSubmit() {},
-};
-
 Form.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -150,4 +144,6 @@ Form.propTypes = {
 
 export { Provider, useForm, useStatus, useValue };
 
-export default memo(Form);
+export default memo(
+  forwardRef((props, ref) => <Form {...props} forwardedRef={ref} />),
+);

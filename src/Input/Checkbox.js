@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Checkbox = props => {
+const Checkbox = ({ forwardedRef, ...props }) => {
   const {
     error,
     onBlur = () => {},
@@ -37,9 +38,25 @@ const Checkbox = props => {
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
+      ref={forwardedRef}
       type="checkbox"
     />
   );
 };
 
-export default Checkbox;
+Checkbox.propTypes = {
+  error: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+  ]),
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  type: PropTypes.string,
+  value: PropTypes.bool,
+};
+
+export default forwardRef((props, ref) => (
+  <Checkbox {...props} forwardedRef={ref} />
+));

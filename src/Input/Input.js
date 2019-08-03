@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Input = props => {
+const Input = ({ forwardedRef, ...props }) => {
   const {
     error,
     onBlur = () => {},
@@ -37,10 +38,26 @@ const Input = props => {
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
+      ref={forwardedRef}
       type={type}
       value={value}
     />
   );
 };
 
-export default Input;
+Input.propTypes = {
+  error: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+  ]),
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  type: PropTypes.string,
+  value: PropTypes.string,
+};
+
+export default forwardRef((props, ref) => (
+  <Input {...props} forwardedRef={ref} />
+));
