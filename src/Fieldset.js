@@ -48,9 +48,7 @@ export const Fieldset = props => {
 };
 
 Fieldset.defaultProps = {
-  error: {},
   onChange() {},
-  value: {},
 };
 
 Fieldset.propTypes = {
