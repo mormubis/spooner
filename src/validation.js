@@ -22,7 +22,9 @@ function required(value, options) {
 }
 
 function shape(value = {}, constraints) {
-  return validate(value, constraints);
+  const errors = validate(value, constraints);
+
+  return Object.keys(errors).length ? [errors] : undefined;
 }
 
 function arrayOf(value = [], constraints) {
