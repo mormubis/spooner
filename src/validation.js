@@ -13,7 +13,7 @@ function required(value, options) {
 }
 
 function shape(value = {}, constraints) {
-  const errors = vjs(value, constraints);
+  const errors = vjs(value, constraints, { fullMessages: false });
   return Object.keys(errors).length ? [errors] : undefined;
 }
 
