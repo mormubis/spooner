@@ -1,5 +1,14 @@
 import vjs from 'validate.js';
 
+function validate(values, constraints) {
+  const errors = vjs(values, constraints, { fullMessages: false }) || {};
+
+  return Object.keys(errors).reduce(
+    (acc, key) => ({ ...acc, [key]: errors[key][0] }),
+    {},
+  );
+}
+
 function number(value, options) {
   return vjs.single(value, {
     numericality: { ...options, strict: true },
@@ -13,9 +22,7 @@ function required(value, options) {
 }
 
 function shape(value = {}, constraints) {
-  const errors = vjs(value, constraints, { fullMessages: false });
-
-  return errors && Object.keys(errors).length ? [errors] : undefined;
+  return validate(value, constraints);
 }
 
 function arrayOf(value = [], constraints) {
@@ -34,14 +41,5 @@ vjs.validators = {
   required,
   shape,
 };
-
-export function validate(values, constraints) {
-  const errors = vjs(values, constraints, { fullMessages: false }) || {};
-
-  return Object.keys(errors).reduce(
-    (acc, key) => ({ ...acc, [key]: errors[key][0] }),
-    {},
-  );
-}
 
 export default validate;
