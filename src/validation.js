@@ -1,6 +1,10 @@
 import vjs from 'validate.js';
 
-function validate(values, constraints) {
+function single(value, constraint) {
+  return vjs.single(value, constraint, { fullMessages: false });
+}
+
+function multiple(values, constraints) {
   const errors = vjs(values, constraints, { fullMessages: false }) || {};
 
   return Object.keys(errors).reduce(
@@ -9,30 +13,27 @@ function validate(values, constraints) {
   );
 }
 
+function arrayOf(value = [], constraints) {
+  const validator =
+    'shape' in constraints
+      ? rvalue => multiple(rvalue, constraints.shape)
+      : rvalue => single(rvalue, constraints);
+
+  const errors = value.map(validator);
+
+  return errors.filter(Boolean).length ? [errors] : undefined;
+}
+
 function number(value, options) {
-  return vjs.single(value, {
-    numericality: { ...options, strict: true },
-  });
+  return single(value, { numericality: { ...options, strict: true } });
 }
 
 function required(value, options) {
-  return vjs.single(value, {
-    presence: { ...options, allowEmpty: false },
-  });
+  return single(value, { presence: { ...options, allowEmpty: false } });
 }
 
 function shape(value = {}, constraints) {
-  const errors = validate(value, constraints);
-
-  return Object.keys(errors).length ? [errors] : undefined;
-}
-
-function arrayOf(value = [], constraints) {
-  const errors = value
-    .map(item => shape(item, constraints))
-    .map(item => item && item[0]);
-
-  return errors.filter(item => item).length ? [errors] : undefined;
+  return multiple(value, constraints);
 }
 
 vjs.validators = {
@@ -44,4 +45,4 @@ vjs.validators = {
   shape,
 };
 
-export default validate;
+export default multiple;
