@@ -6,7 +6,7 @@ import uuid from 'uuid/v4';
 import Field, { useField } from './Field';
 import { Provider, useStatus } from './Form';
 
-const Table = ({ children, ...props }) => {
+const Table = ({ children = () => {}, ...props }) => {
   const { onChange = () => {}, ...input } = useField(props);
 
   const status = useStatus({
@@ -14,10 +14,11 @@ const Table = ({ children, ...props }) => {
     value: input.value || [],
   });
 
-  const prevValue = useRef(status.value);
+  const innerValue = useRef(status.value);
   const keys = useRef(status.value.map(() => uuid()));
 
-  if (JSON.stringify(prevValue.current) !== JSON.stringify(status.value)) {
+  if (JSON.stringify(innerValue.current) !== JSON.stringify(status.value)) {
+    innerValue.current = [...status.value];
     keys.current = status.value.map(() => uuid());
   }
 
@@ -26,7 +27,7 @@ const Table = ({ children, ...props }) => {
       const before = status.value;
       const after = [...before, initial];
 
-      prevValue.current = [...after];
+      innerValue.current = [...after];
       keys.current.push(uuid());
 
       onChange(after, before);
@@ -40,11 +41,12 @@ const Table = ({ children, ...props }) => {
 
       if (index !== -1) {
         const before = status.value;
-        const after = [...before];
-        after.splice(index, 1);
+        const after = before.filter((ignore, rindex) => rindex !== index);
 
-        prevValue.current = [...after];
-        keys.current = keys.current.filter((_, idx) => idx !== index);
+        innerValue.current = [...after];
+        keys.current = keys.current.filter(
+          (ignore, rindex) => rindex !== index,
+        );
 
         onChange(after, before);
       }
@@ -61,7 +63,7 @@ const Table = ({ children, ...props }) => {
         const after = [...before];
         after[index] = value;
 
-        prevValue.current = [...after];
+        innerValue.current = [...after];
 
         onChange(after, before);
       }
@@ -78,7 +80,7 @@ const Table = ({ children, ...props }) => {
         const after = [...before];
         delete after[index];
 
-        prevValue.current = [...after];
+        innerValue.current = [...after];
 
         onChange(after, before);
       }
@@ -86,22 +88,19 @@ const Table = ({ children, ...props }) => {
     [onChange],
   );
 
-  const mapped = useMemo(
-    () =>
-      keys.current.reduce(
-        ([error, value], key, index) => [
-          { ...error, [key]: status.error[index] },
-          { ...value, [key]: status.value[index] },
-        ],
-        [{}, {}],
-      ),
-    [JSON.stringify(status.error), JSON.stringify(status.value)],
-  );
+  const context = useMemo(() => {
+    const error = keys.current.reduce(
+      (acc, key, index) => ({ ...acc, [key]: status.error[index] }),
+      {},
+    );
 
-  const context = useMemo(
-    () => ({ error: mapped[0], set, unset, value: mapped[1] }),
-    [mapped, set, unset],
-  );
+    const value = keys.current.reduce(
+      (acc, key, index) => ({ ...acc, [key]: status.value[index] }),
+      {},
+    );
+
+    return { error, set, unset, value };
+  }, [JSON.stringify(status.error), set, unset, JSON.stringify(status.value)]);
 
   return (
     <Provider value={context}>
@@ -114,6 +113,7 @@ const Table = ({ children, ...props }) => {
               $remove: remove(key),
               array,
               index,
+              name: `${props.name}-${key}`,
             })
           }
         </Field>
@@ -123,8 +123,9 @@ const Table = ({ children, ...props }) => {
 };
 
 Table.propTypes = {
-  children: PropTypes.func,
+  children: PropTypes.func.isRequired,
   error: PropTypes.array,
+  name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   value: PropTypes.array,
 };
