@@ -4,7 +4,7 @@
     "jest": true
   },
   "extends": [
-    "plugin:react/recommended",
+    "canonical",
     "airbnb",
     "prettier",
     "prettier/react"
@@ -16,6 +16,7 @@
     }
   },
   "rules": {
+    "babel/object-curly-spacing": "off",
     "import/no-named-as-default": "off",
     "react/destructuring-assignment": [
       "warn",
@@ -26,13 +27,15 @@
     ],
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": [
-      "on",
+      "error",
       {
         "extensions": [".js", ".jsx"]
       }
     ],
     "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-spreading": "off",
     "react/no-did-update-set-state": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "unicorn/prevent-abbreviations": "off"
   }
 }
