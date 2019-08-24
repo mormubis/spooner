@@ -21,7 +21,11 @@ function arrayOf(value = [], constraints) {
 
   const errors = value.map(validator);
 
-  return errors.filter(Boolean).length ? [errors] : undefined;
+  return errors.filter(
+    item => typeof item !== 'object' || Object.keys(item).length > 0,
+  ).length
+    ? [errors]
+    : undefined;
 }
 
 function number(value, options) {
