@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const File = ({ forwardedRef, ...props }) => {
+const File = ({ forwardedRef, ...input }) => {
   const {
     error,
     multiple = false,
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
-    ...fieldProps
-  } = useField(props);
+    ...props
+  } = useField(input);
 
   const handleBlur = () => {
     onBlur();
@@ -31,7 +31,7 @@ const File = ({ forwardedRef, ...props }) => {
 
   return (
     <input
-      {...fieldProps}
+      {...props}
       data-error={!!error}
       data-multiple={multiple}
       onBlur={handleBlur}

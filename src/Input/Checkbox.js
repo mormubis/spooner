@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Checkbox = ({ forwardedRef, ...props }) => {
+const Checkbox = ({ forwardedRef, ...input }) => {
   const {
     error,
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
     value = false,
-    ...fieldProps
-  } = useField(props);
+    ...props
+  } = useField(input);
 
   const handleBlur = () => {
     onBlur();
@@ -31,7 +31,7 @@ const Checkbox = ({ forwardedRef, ...props }) => {
 
   return (
     <input
-      {...fieldProps}
+      {...props}
       checked={value}
       data-error={!!error}
       data-value={value}

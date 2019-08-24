@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Select = ({ children, forwardedRef = createRef(), ...props }) => {
+const Select = ({ children, forwardedRef = createRef(), ...input }) => {
   const {
     error,
     multiple = false,
@@ -11,8 +11,8 @@ const Select = ({ children, forwardedRef = createRef(), ...props }) => {
     onChange = () => {},
     onFocus = () => {},
     value,
-    ...fieldProps
-  } = useField(props);
+    ...props
+  } = useField(input);
 
   const element = useRef(null);
 
@@ -72,7 +72,7 @@ const Select = ({ children, forwardedRef = createRef(), ...props }) => {
 
   return (
     <select
-      {...fieldProps}
+      {...props}
       data-error={!!error}
       data-multiple={multiple}
       data-value={value}

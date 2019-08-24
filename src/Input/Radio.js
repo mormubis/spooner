@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Radio = ({ content, forwardedRef, ...props }) => {
+const Radio = ({ content, forwardedRef, ...input }) => {
   const {
     error,
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
     value,
-    ...fieldProps
-  } = useField(props);
+    ...props
+  } = useField(input);
 
   const handleBlur = () => {
     onBlur();
@@ -31,7 +31,7 @@ const Radio = ({ content, forwardedRef, ...props }) => {
 
   return (
     <input
-      {...fieldProps}
+      {...props}
       checked={content === value}
       data-checked={content === value}
       data-error={!!error}

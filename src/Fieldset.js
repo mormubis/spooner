@@ -1,13 +1,14 @@
 import React, { forwardRef, memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import omit from 'underscore-es/omit';
 
 import { useField } from './Field';
 import { Provider, useStatus } from './Form';
 
-export const Fieldset = ({ children, forwardedRef, legend, ...props }) => {
-  const { onChange = () => {}, ...fieldProps } = useField(props);
+export const Fieldset = ({ children, forwardedRef, legend, ...input }) => {
+  const { onChange = () => {}, ...props } = useField(input);
 
-  const status = useStatus(fieldProps);
+  const status = useStatus(props);
 
   const set = useCallback(
     (name, value) => {
@@ -22,8 +23,7 @@ export const Fieldset = ({ children, forwardedRef, legend, ...props }) => {
   const unset = useCallback(
     name => {
       const before = status.value;
-      const after = { ...before };
-      delete after[name];
+      const after = omit(before, name);
 
       onChange(after, before);
     },
@@ -37,7 +37,7 @@ export const Fieldset = ({ children, forwardedRef, legend, ...props }) => {
 
   return (
     <Provider value={context}>
-      <fieldset {...fieldProps} ref={forwardedRef}>
+      <fieldset {...props} ref={forwardedRef}>
         {legend && <legend>{legend}</legend>}
         {children}
       </fieldset>

@@ -40,6 +40,7 @@ const useStatus = nextState => {
     value: nextState.value || {},
   };
 
+  // eslint-disable-next-line fp/no-proxy
   return new Proxy(
     {},
     {
@@ -50,28 +51,27 @@ const useStatus = nextState => {
   );
 };
 
-const Form = props => {
+const Form = input => {
   const {
     children,
     constraint,
     onInvalid = () => {},
     onSubmit = () => {},
-    ...formProps
-  } = omit(props, 'error', 'onChange', 'onErrorChange', 'value');
+    ...props
+  } = omit(input, 'error', 'onChange', 'onErrorChange', 'value');
 
-  const { onChange, onErrorChange, ...input } = useUncontrolled(props, {
+  const { onChange, onErrorChange, ...rest } = useUncontrolled(input, {
     error: 'onErrorChange',
     value: 'onChange',
   });
 
-  const status = useStatus(input);
+  const status = useStatus(rest);
 
   const handleChange = useCallback(
     (name, after, before) => {
       onChange(after, before);
 
-      const error = { ...status.error };
-      delete error[name];
+      const error = omit(status.error, name);
 
       if (JSON.stringify(error) !== JSON.stringify(status.error)) {
         onErrorChange(error);
@@ -108,8 +108,7 @@ const Form = props => {
   const unset = useCallback(
     name => {
       const before = status.value;
-      const after = { ...before };
-      delete after[name];
+      const after = omit(before, name);
 
       handleChange(name, after, before);
     },
@@ -122,7 +121,7 @@ const Form = props => {
   );
 
   return (
-    <form noValidate {...formProps} onSubmit={handleSubmit}>
+    <form noValidate {...props} onSubmit={handleSubmit}>
       <Provider value={context}>{children}</Provider>
     </form>
   );

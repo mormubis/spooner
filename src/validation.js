@@ -1,3 +1,4 @@
+// eslint-disable-next-line filenames/match-exported
 import vjs from 'validate.js';
 
 function single(value, constraint) {

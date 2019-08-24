@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Textarea = ({ forwardedRef, ...props }) => {
+const Textarea = ({ forwardedRef, ...input }) => {
   const {
     error,
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
     value = '',
-    ...fieldProps
-  } = useField(props);
+    ...props
+  } = useField(input);
 
   const handleBlur = () => {
     onBlur();
@@ -31,7 +31,7 @@ const Textarea = ({ forwardedRef, ...props }) => {
 
   return (
     <textarea
-      {...fieldProps}
+      {...props}
       data-error={!!error}
       data-value={value}
       onBlur={handleBlur}

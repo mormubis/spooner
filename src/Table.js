@@ -6,19 +6,19 @@ import uuid from 'uuid/v4';
 import Field, { useField } from './Field';
 import { Provider, useStatus } from './Form';
 
-const Table = ({ children = () => {}, ...props }) => {
-  const { onChange = () => {}, ...input } = useField(props);
+const Table = ({ children = () => {}, ...input }) => {
+  const { onChange = () => {}, ...rest } = useField(input);
 
   const status = useStatus({
-    error: input.error || [],
-    value: input.value || [],
+    error: rest.error || [],
+    value: rest.value || [],
   });
 
   const innerValue = useRef(status.value);
   const keys = useRef(status.value.map(() => uuid()));
 
   if (JSON.stringify(innerValue.current) !== JSON.stringify(status.value)) {
-    innerValue.current = [...status.value];
+    innerValue.current = status.value;
     keys.current = status.value.map(() => uuid());
   }
 
@@ -27,7 +27,7 @@ const Table = ({ children = () => {}, ...props }) => {
       const before = status.value;
       const after = [...before, initial];
 
-      innerValue.current = [...after];
+      innerValue.current = after;
       keys.current.push(uuid());
 
       onChange(after, before);
@@ -43,7 +43,7 @@ const Table = ({ children = () => {}, ...props }) => {
         const before = status.value;
         const after = before.filter((ignore, rindex) => rindex !== index);
 
-        innerValue.current = [...after];
+        innerValue.current = after;
         keys.current = keys.current.filter(
           (ignore, rindex) => rindex !== index,
         );
@@ -63,7 +63,7 @@ const Table = ({ children = () => {}, ...props }) => {
         const after = [...before];
         after[index] = value;
 
-        innerValue.current = [...after];
+        innerValue.current = after;
 
         onChange(after, before);
       }
@@ -78,9 +78,10 @@ const Table = ({ children = () => {}, ...props }) => {
       if (index !== -1) {
         const before = status.value;
         const after = [...before];
+        // eslint-disable-next-line fp/no-delete
         delete after[index];
 
-        innerValue.current = [...after];
+        innerValue.current = after;
 
         onChange(after, before);
       }
@@ -113,7 +114,7 @@ const Table = ({ children = () => {}, ...props }) => {
               $remove: remove(key),
               array,
               index,
-              name: `${props.name}-${key}`,
+              name: `${input.name}-${key}`,
             })
           }
         </Field>

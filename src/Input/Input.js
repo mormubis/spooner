@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Input = ({ forwardedRef, ...props }) => {
+const Input = ({ forwardedRef, ...input }) => {
   const {
     error,
     onBlur = () => {},
@@ -11,8 +11,8 @@ const Input = ({ forwardedRef, ...props }) => {
     onFocus = () => {},
     type = 'text',
     value = '',
-    ...fieldProps
-  } = useField(props);
+    ...props
+  } = useField(input);
 
   const handleBlur = () => {
     onBlur();
@@ -32,7 +32,7 @@ const Input = ({ forwardedRef, ...props }) => {
 
   return (
     <input
-      {...fieldProps}
+      {...props}
       data-error={!!error}
       data-value={value}
       onBlur={handleBlur}
