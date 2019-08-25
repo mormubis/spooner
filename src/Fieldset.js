@@ -1,6 +1,5 @@
 import React, { forwardRef, memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import omit from 'underscore-es/omit';
 
 import { useField } from './Field';
 import { Provider, useStatus } from './Form';
@@ -23,7 +22,9 @@ export const Fieldset = ({ children, forwardedRef, legend, ...input }) => {
   const unset = useCallback(
     name => {
       const before = status.value;
-      const after = omit(before, name);
+      const after = { ...before };
+      // eslint-disable-next-line fp/no-delete
+      delete after[name];
 
       onChange(after, before);
     },

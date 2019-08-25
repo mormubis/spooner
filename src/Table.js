@@ -1,10 +1,25 @@
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import memoize from 'underscore-es/memoize';
 import uuid from 'uuid/v4';
 
 import Field, { useField } from './Field';
 import { Provider, useStatus } from './Form';
+
+function memoize(func, hasher = key => key) {
+  const handler = (...argv) => {
+    const { cache } = handler;
+    const key = hasher(...argv);
+
+    if (!(key in cache)) {
+      cache[key] = func(...argv);
+    }
+
+    return cache[key];
+  };
+  handler.cache = {};
+
+  return handler;
+}
 
 const Table = ({ children = () => {}, ...input }) => {
   const { onChange = () => {}, ...rest } = useField(input);

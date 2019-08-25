@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useUncontrolled } from 'uncontrollable';
-import omit from 'underscore-es/omit';
 
 import validate from './validation';
 
@@ -58,7 +57,7 @@ const Form = input => {
     onInvalid = () => {},
     onSubmit = () => {},
     ...props
-  } = omit(input, 'error', 'onChange', 'onErrorChange', 'value');
+  } = input;
 
   const { onChange, onErrorChange, ...rest } = useUncontrolled(input, {
     error: 'onErrorChange',
@@ -71,7 +70,9 @@ const Form = input => {
     (name, after, before) => {
       onChange(after, before);
 
-      const error = omit(status.error, name);
+      const error = { ...status.error };
+      // eslint-disable-next-line fp/no-delete
+      delete error[name];
 
       if (JSON.stringify(error) !== JSON.stringify(status.error)) {
         onErrorChange(error);
@@ -108,7 +109,9 @@ const Form = input => {
   const unset = useCallback(
     name => {
       const before = status.value;
-      const after = omit(before, name);
+      const after = { ...before };
+      // eslint-disable-next-line fp/no-delete
+      delete after[name];
 
       handleChange(name, after, before);
     },
@@ -121,7 +124,17 @@ const Form = input => {
   );
 
   return (
-    <form noValidate {...props} onSubmit={handleSubmit}>
+    <form
+      noValidate
+      {...{
+        ...props,
+        error: undefined,
+        onChange: undefined,
+        onErrorChange: undefined,
+        value: undefined,
+      }}
+      onSubmit={handleSubmit}
+    >
       <Provider value={context}>{children}</Provider>
     </form>
   );
