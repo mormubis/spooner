@@ -2,7 +2,6 @@
   "author": "Adrian de la Rosa <adrian@joinedapp.com>",
   "dependencies": {
     "uncontrollable": "^7.0.0",
-    "underscore-es": "^1.9.8",
     "uuid": "^3.3.3",
     "validate.js": "^0.13.1"
   },
