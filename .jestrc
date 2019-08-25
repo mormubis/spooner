@@ -3,4 +3,8 @@ module.exports = {
   coverageDirectory: '<rootDir>/coverage',
   setupFiles: ['./lib/jest/shim.js', './lib/jest/polyfill.js'],
   testMatch: ['<rootDir>/test/**/*.test.js'],
+  transform: {
+    '^.+\\.js': 'babel-jest',
+  },
+  transformIgnorePatterns: ['<rootDir>/node_modules/'],
 };
