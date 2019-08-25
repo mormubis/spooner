@@ -27,9 +27,9 @@ const useForm = () => {
 };
 
 const useValue = name => {
-  const { set, unset, ...state } = useForm();
+  const { set, unset, ...context } = useForm();
 
-  return { error: state.error[name], value: state.value[name] };
+  return { error: context.error[name], value: context.value[name] };
 };
 
 const useStatus = nextState => {
