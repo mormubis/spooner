@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { createRef, forwardRef, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const Select = ({ children, ...props }) => {
+const Select = ({ children, forwardedRef = createRef(), ...input }) => {
   const {
     error,
     multiple = false,
@@ -11,8 +11,8 @@ const Select = ({ children, ...props }) => {
     onChange = () => {},
     onFocus = () => {},
     value,
-    ...fieldProps
-  } = useField(props);
+    ...props
+  } = useField(input);
 
   const element = useRef(null);
 
@@ -72,14 +72,19 @@ const Select = ({ children, ...props }) => {
 
   return (
     <select
-      {...fieldProps}
+      {...props}
       data-error={!!error}
+      data-multiple={multiple}
       data-value={value}
       multiple={multiple}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
-      ref={element}
+      ref={node => {
+        element.current = node;
+        // eslint-disable-next-line no-param-reassign
+        forwardedRef.current = node;
+      }}
       value={value}
     >
       {children}
@@ -92,6 +97,18 @@ Select.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  error: PropTypes.string,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+  ]),
+  multiple: PropTypes.bool,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  type: PropTypes.string,
 };
 
-export default Select;
+export default forwardRef((props, ref) => (
+  <Select {...props} forwardedRef={ref} />
+));
