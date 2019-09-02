@@ -24,7 +24,7 @@ function memoize(func, hasher = key => key) {
 const Table = ({ children = () => {}, ...input }) => {
   const { onChange = () => {}, ...rest } = useField(input);
 
-  const status = useStatus({
+  const [status, setValue] = useStatus({
     error: rest.error || [],
     value: rest.value || [],
   });
@@ -45,6 +45,7 @@ const Table = ({ children = () => {}, ...input }) => {
       innerValue.current = after;
       keys.current.push(uuid());
 
+      setValue(after);
       onChange(after, before);
     },
     [onChange],
@@ -63,6 +64,7 @@ const Table = ({ children = () => {}, ...input }) => {
           (ignore, rindex) => rindex !== index,
         );
 
+        setValue(after);
         onChange(after, before);
       }
     }),
@@ -80,6 +82,7 @@ const Table = ({ children = () => {}, ...input }) => {
 
         innerValue.current = after;
 
+        setValue(after);
         onChange(after, before);
       }
     },
@@ -98,6 +101,7 @@ const Table = ({ children = () => {}, ...input }) => {
 
         innerValue.current = after;
 
+        setValue(after);
         onChange(after, before);
       }
     },

@@ -25,22 +25,11 @@ const useForm = () => {
   return useContext(Context);
 };
 
-const useValue = name => {
-  const { set, unset, ...context } = useForm();
-
-  return { error: context.error[name], value: context.value[name] };
-};
-
 const useStatus = nextState => {
-  const state = useRef({ error: {}, value: {} });
-
-  state.current = {
-    error: nextState.error || {},
-    value: nextState.value || {},
-  };
+  const state = useRef({ error: undefined, value: undefined });
 
   // eslint-disable-next-line fp/no-proxy
-  return new Proxy(
+  const accessor = new Proxy(
     {},
     {
       get(target, prop) {
@@ -48,6 +37,42 @@ const useStatus = nextState => {
       },
     },
   );
+
+  const setState = useCallback(
+    (error, value) => {
+      state.current = { error, value };
+    },
+    [state],
+  );
+
+  const setError = useCallback(
+    error => {
+      setState(error, state.current.value);
+    },
+    [setState],
+  );
+
+  const setValue = useCallback(
+    value => {
+      setState(state.current.error, value);
+    },
+    [setState],
+  );
+
+  if (
+    JSON.stringify(nextState.error) !== JSON.stringify(accessor.error) ||
+    JSON.stringify(nextState.value) !== JSON.stringify(accessor.value)
+  ) {
+    setState(nextState.error, nextState.value);
+  }
+
+  return [accessor, setValue, setError];
+};
+
+const useValue = name => {
+  const { set, unset, ...context } = useForm();
+
+  return { error: context.error[name], value: context.value[name] };
 };
 
 const Form = input => {
@@ -64,7 +89,10 @@ const Form = input => {
     value: 'onChange',
   });
 
-  const status = useStatus(rest);
+  const [status, setValue, setError] = useStatus({
+    error: rest.error || {},
+    value: rest.value || {},
+  });
 
   const handleChange = useCallback(
     (name, after, before) => {
@@ -75,6 +103,7 @@ const Form = input => {
       delete error[name];
 
       if (JSON.stringify(error) !== JSON.stringify(status.error)) {
+        setError(error);
         onErrorChange(error);
       }
     },
@@ -101,6 +130,7 @@ const Form = input => {
       const before = status.value;
       const after = { ...before, [name]: value };
 
+      setValue(after);
       handleChange(name, after, before);
     },
     [handleChange],
@@ -113,6 +143,7 @@ const Form = input => {
       // eslint-disable-next-line fp/no-delete
       delete after[name];
 
+      setValue(after);
       handleChange(name, after, before);
     },
     [handleChange],

@@ -7,13 +7,19 @@ import { Provider, useStatus } from './Form';
 export const Fieldset = ({ children, forwardedRef, legend, ...input }) => {
   const { onChange = () => {}, ...props } = useField(input);
 
-  const status = useStatus(props);
+  const [status, setValue] = useStatus({
+    // eslint-disable-next-line react/destructuring-assignment
+    error: props.error || {},
+    // eslint-disable-next-line react/destructuring-assignment
+    value: props.value || {},
+  });
 
   const set = useCallback(
     (name, value) => {
       const before = status.value;
       const after = { ...before, [name]: value };
 
+      setValue(after);
       onChange(after, before);
     },
     [onChange],
@@ -26,6 +32,7 @@ export const Fieldset = ({ children, forwardedRef, legend, ...input }) => {
       // eslint-disable-next-line fp/no-delete
       delete after[name];
 
+      setValue(after);
       onChange(after, before);
     },
     [onChange],
