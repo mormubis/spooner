@@ -79,6 +79,7 @@ const Form = input => {
   const {
     children,
     constraint,
+    forwardedRef,
     onInvalid = () => {},
     onSubmit = () => {},
     ...props
@@ -164,6 +165,7 @@ const Form = input => {
         onErrorChange: undefined,
         value: undefined,
       }}
+      ref={forwardedRef}
       onSubmit={handleSubmit}
     >
       <Provider value={context}>{children}</Provider>
@@ -178,6 +180,10 @@ Form.propTypes = {
   ]),
   constraint: PropTypes.object,
   error: PropTypes.object,
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+  ]),
   onChange: PropTypes.func,
   onErrorChange: PropTypes.func,
   onInvalid: PropTypes.func,
