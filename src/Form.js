@@ -75,16 +75,14 @@ const useValue = name => {
   return { error: context.error[name], value: context.value[name] };
 };
 
-const Form = input => {
-  const {
-    children,
-    constraint,
-    forwardedRef,
-    onInvalid = () => {},
-    onSubmit = () => {},
-    ...props
-  } = input;
-
+const Form = ({
+  children,
+  constraint,
+  forwardedRef,
+  onInvalid = () => {},
+  onSubmit = () => {},
+  ...input
+}) => {
   const { onChange, onErrorChange, ...rest } = useUncontrolled(input, {
     error: 'onErrorChange',
     value: 'onChange',
@@ -155,19 +153,18 @@ const Form = input => {
     [JSON.stringify(status.error), set, unset, JSON.stringify(status.value)],
   );
 
+  const props = { ...input };
+  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
+  delete props.error;
+  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
+  delete props.onChange;
+  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
+  delete props.onErrorChange;
+  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
+  delete props.value;
+
   return (
-    <form
-      noValidate
-      {...{
-        ...props,
-        error: undefined,
-        onChange: undefined,
-        onErrorChange: undefined,
-        value: undefined,
-      }}
-      ref={forwardedRef}
-      onSubmit={handleSubmit}
-    >
+    <form noValidate {...props} ref={forwardedRef} onSubmit={handleSubmit}>
       <Provider value={context}>{children}</Provider>
     </form>
   );
