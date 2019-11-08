@@ -4,6 +4,7 @@ import React, {
   memo,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
 } from 'react';
@@ -93,6 +94,8 @@ const Form = ({
     value: rest.value || {},
   });
 
+  const isMounted = useRef(true);
+
   const handleChange = useCallback(
     (name, after, before) => {
       onChange(after, before);
@@ -126,32 +129,45 @@ const Form = ({
 
   const set = useCallback(
     (name, value) => {
-      const before = status.value;
-      const after = { ...before, [name]: value };
+      if (isMounted) {
+        const before = status.value;
+        const after = { ...before, [name]: value };
 
-      setValue(after);
-      handleChange(name, after, before);
+        setValue(after);
+        handleChange(name, after, before);
+      }
     },
-    [handleChange],
+    [handleChange, isMounted],
   );
 
   const unset = useCallback(
     name => {
-      const before = status.value;
-      const after = { ...before };
-      // eslint-disable-next-line fp/no-delete
-      delete after[name];
+      if (isMounted) {
+        const before = status.value;
+        const after = { ...before };
+        // eslint-disable-next-line fp/no-delete
+        delete after[name];
 
-      setValue(after);
-      handleChange(name, after, before);
+        setValue(after);
+        handleChange(name, after, before);
+      }
     },
-    [handleChange],
+    [handleChange, isMounted],
   );
 
   const context = useMemo(
     () => ({ error: status.error, set, unset, value: status.value }),
     [JSON.stringify(status.error), set, unset, JSON.stringify(status.value)],
   );
+
+  useEffect(() => {
+    // componentDidMount
+
+    return () => {
+      // componentWillUnmount
+      isMounted.current = false;
+    };
+  }, []);
 
   const props = { ...input };
   // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
