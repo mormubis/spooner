@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 
 import { useForm } from './Form';
 
+/**
+ * @param {Array} content JSX Content to be wrapped
+ * @param {Function} wrapper Component that use children render
+ *
+ * @returns {Array} result JSX content wrapped by wrapper
+ */
 function wrap(content, wrapper) {
   return wrapper(content);
 }

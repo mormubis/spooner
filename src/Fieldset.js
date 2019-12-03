@@ -29,7 +29,6 @@ export const Fieldset = ({ children, forwardedRef, legend, ...input }) => {
     name => {
       const before = status.value;
       const after = { ...before };
-      // eslint-disable-next-line fp/no-delete
       delete after[name];
 
       setValue(after);

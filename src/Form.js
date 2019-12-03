@@ -29,7 +29,6 @@ const useForm = () => {
 const useStatus = nextState => {
   const state = useRef({ error: undefined, value: undefined });
 
-  // eslint-disable-next-line fp/no-proxy
   const accessor = new Proxy(
     {},
     {
@@ -101,7 +100,6 @@ const Form = ({
       onChange(after, before);
 
       const error = { ...status.error };
-      // eslint-disable-next-line fp/no-delete
       delete error[name];
 
       if (JSON.stringify(error) !== JSON.stringify(status.error)) {
@@ -145,7 +143,6 @@ const Form = ({
       if (isMounted) {
         const before = status.value;
         const after = { ...before };
-        // eslint-disable-next-line fp/no-delete
         delete after[name];
 
         setValue(after);
@@ -170,13 +167,9 @@ const Form = ({
   }, []);
 
   const props = { ...input };
-  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
   delete props.error;
-  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
   delete props.onChange;
-  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
   delete props.onErrorChange;
-  // eslint-disable-next-line fp/no-delete,react/destructuring-assignment
   delete props.value;
 
   return (

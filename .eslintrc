@@ -1,41 +1,61 @@
 {
   "env": {
-    "browser": true,
     "jest": true
   },
   "extends": [
-    "canonical",
+    "plugin:jest/recommended",
+    "plugin:jest/style",
+    "eslint:recommended",
     "airbnb",
-    "prettier",
-    "prettier/react"
+    "plugin:jsdoc/recommended",
+    "plugin:unicorn/recommended",
+    "prettier"
   ],
-  "parser": "babel-eslint",
-  "settings": {
-    "react": {
-      "version": "16.8"
-    }
-  },
+  "plugins": ["import", "jest", "jsdoc", "promise", "sort-keys-fix", "unicorn"],
   "rules": {
-    "babel/object-curly-spacing": "off",
-    "import/no-named-as-default": "off",
-    "react/destructuring-assignment": [
-      "warn",
-      "always",
+    "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
+    "sort-keys": "error",
+
+    "import/no-commonjs": "off",
+    "import/order": [
+      2,
       {
-        "ignoreClassFields": true
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "newlines-between": "always"
       }
     ],
+    "import/unambiguous": "off",
+
+    "promise/prefer-await-to-then": "error",
+    "promise/prefer-await-to-callbacks": "error",
+
+    "react/destructuring-assignment": "off",
     "react/forbid-prop-types": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": [
       "error",
       {
         "extensions": [".js", ".jsx"]
       }
     ],
-    "react/jsx-one-expression-per-line": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/no-did-update-set-state": "off",
     "react/require-default-props": "off",
+
+    "unicorn/catch-error-name": "error",
+    "unicorn/filename-case": "off",
+    "unicorn/new-for-builtins": "off",
+    "unicorn/no-console-spaces": "off",
+    "unicorn/no-keyword-prefix": "error",
+    "unicorn/no-unsafe-regex": "error",
+    "unicorn/number-literal-case": "off",
     "unicorn/prevent-abbreviations": "off"
-  }
+  },
+  "settings": {}
 }

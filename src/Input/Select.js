@@ -17,7 +17,7 @@ const Select = ({ children, forwardedRef = createRef(), ...input }) => {
   const element = useRef(null);
 
   const getOption = needle => {
-    const options = Array.from(element.current.options);
+    const options = [...element.current.options];
 
     return (
       options.find(({ value: option }) => option === needle) ||
@@ -26,7 +26,7 @@ const Select = ({ children, forwardedRef = createRef(), ...input }) => {
   };
 
   const getValue = raw => {
-    const options = Array.from(element.current.options);
+    const options = [...element.current.options];
     const rvalue = Array.isArray(raw) ? raw : [raw];
 
     let selected = rvalue
@@ -52,7 +52,7 @@ const Select = ({ children, forwardedRef = createRef(), ...input }) => {
 
     event.stopPropagation();
 
-    const raw = Array.from(selectedOptions).map(option => option.value);
+    const raw = [...selectedOptions].map(option => option.value);
     const after = getValue(raw);
 
     onChange(after);

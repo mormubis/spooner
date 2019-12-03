@@ -5,6 +5,12 @@ import uuid from 'uuid/v4';
 import Field, { useField } from './Field';
 import { Provider, useStatus } from './Form';
 
+/**
+ * @param {Function} func Function to be memoized
+ * @param {Function} hasher Function that returns a hash from arguments
+ *
+ * @returns {Function} fn Memoized function
+ */
 function memoize(func, hasher = key => key) {
   const handler = (...argv) => {
     const { cache } = handler;
@@ -96,7 +102,6 @@ const Table = ({ children = () => {}, ...input }) => {
       if (index !== -1) {
         const before = status.value;
         const after = [...before];
-        // eslint-disable-next-line fp/no-delete
         delete after[index];
 
         innerValue.current = after;
@@ -134,8 +139,7 @@ const Table = ({ children = () => {}, ...input }) => {
               array,
               index,
               name: `${input.name}-${key}`,
-            })
-          }
+            })}
         </Field>
       ))}
     </Provider>

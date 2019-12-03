@@ -5,10 +5,20 @@ import { useUncontrolled } from 'uncontrollable';
 import Blocker from './Blocker';
 import { useForm } from './Form';
 
+/**
+ * @param {Array} children JSX children
+ *
+ * @returns {Array} itself
+ */
 function identity(children) {
   return children;
 }
 
+/**
+ * @param {Array} children JSX children
+ *
+ * @returns {Array} children wrapped by Blocker
+ */
 function withProvider(children) {
   return <Blocker>{children}</Blocker>;
 }
