@@ -78,7 +78,7 @@ const useField = input => {
 
       onChange(after, before);
     },
-    [name, set, JSON.stringify(value)],
+    [name, onChange, set, JSON.stringify(value)],
   );
 
   return { ...props, error, name, onChange: handleChange, value };
