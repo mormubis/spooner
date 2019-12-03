@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
@@ -139,7 +140,8 @@ const Table = ({ children = () => {}, ...input }) => {
               array,
               index,
               name: `${input.name}-${key}`,
-            })}
+            })
+          }
         </Field>
       ))}
     </Provider>

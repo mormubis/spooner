@@ -1,4 +1,3 @@
-// eslint-disable-next-line filenames/match-exported
 import Form, { useValue } from './Form';
 
 export { default as Blocker } from './Blocker';
