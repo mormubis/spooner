@@ -127,7 +127,7 @@ const Form = ({
 
   const set = useCallback(
     (name, value) => {
-      if (isMounted) {
+      if (isMounted.current) {
         const before = status.value;
         const after = { ...before, [name]: value };
 
@@ -140,7 +140,7 @@ const Form = ({
 
   const unset = useCallback(
     name => {
-      if (isMounted) {
+      if (isMounted.current) {
         const before = status.value;
         const after = { ...before };
         delete after[name];
