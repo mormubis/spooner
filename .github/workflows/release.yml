@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+      - master
+
+name: Release
+
+jobs:
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Packages
+        run: npm install
+      - name: Build Extension
+        run: npm run build
+      - name: Release to Github / NPM
+        run: npm run release
+        env:
+          GH_TOKEN: ${{ steps.auth.outputs.token }}
