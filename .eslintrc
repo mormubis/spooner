@@ -1,61 +1,9 @@
 {
   "env": {
-    "jest": true
+    "node": true
   },
-  "extends": [
-    "plugin:jest/recommended",
-    "plugin:jest/style",
-    "eslint:recommended",
-    "airbnb",
-    "plugin:jsdoc/recommended",
-    "plugin:unicorn/recommended",
-    "prettier"
-  ],
-  "plugins": ["import", "jest", "jsdoc", "promise", "sort-keys-fix", "unicorn"],
-  "rules": {
-    "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
-    "sort-keys": "error",
-
-    "import/no-commonjs": "off",
-    "import/order": [
-      2,
-      {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index"
-        ],
-        "newlines-between": "always"
-      }
-    ],
-    "import/unambiguous": "off",
-
-    "promise/prefer-await-to-then": "error",
-    "promise/prefer-await-to-callbacks": "error",
-
-    "react/destructuring-assignment": "off",
-    "react/forbid-prop-types": "off",
-    "react/jsx-one-expression-per-line": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/jsx-filename-extension": [
-      "error",
-      {
-        "extensions": [".js", ".jsx"]
-      }
-    ],
-    "react/require-default-props": "off",
-
-    "unicorn/catch-error-name": "error",
-    "unicorn/filename-case": "off",
-    "unicorn/new-for-builtins": "off",
-    "unicorn/no-console-spaces": "off",
-    "unicorn/no-keyword-prefix": "error",
-    "unicorn/no-unsafe-regex": "error",
-    "unicorn/number-literal-case": "off",
-    "unicorn/prevent-abbreviations": "off"
-  },
+  "extends": ["eslint:recommended", "airbnb", "plugin:jsdoc/recommended", "prettier"],
+  "plugins": ["import", "jsdoc", "promise", "sort-keys-fix"],
+  "rules": {},
   "settings": {}
 }

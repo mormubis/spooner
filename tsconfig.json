@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "module": "ESNext",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "strict": true,
+    "target": "ESNext",
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "**/__tests__/**/*"]
+}

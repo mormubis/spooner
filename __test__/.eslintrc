@@ -1,0 +1,15 @@
+{
+  "env": {
+    "jest": true
+  },
+  "extends": [
+    "plugin:jest/recommended",
+    "plugin:jest/style",
+    "eslint:recommended",
+    "airbnb",
+    "prettier"
+  ],
+  "plugins": ["import", "jest", "jsdoc", "promise", "sort-keys-fix"],
+  "rules": {},
+  "settings": {}
+}

@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm run format:ci
+npm run lint:ci
+npm run test:ci
