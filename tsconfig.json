@@ -3,8 +3,9 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "importHelpers": true,
+    "moduleResolution": "node",
     "noEmit": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "module": "ESNext",
     "paths": {
       "@/*": ["src/*"]
