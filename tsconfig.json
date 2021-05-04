@@ -3,6 +3,7 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "importHelpers": true,
+    "lib": ["dom", "ESNext"],
     "moduleResolution": "node",
     "noEmit": true,
     "jsx": "react",

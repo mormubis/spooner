@@ -3,6 +3,10 @@
     "jest": true
   },
   "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
     "plugin:jest/recommended",
     "plugin:jest/style",
     "eslint:recommended",
@@ -10,6 +14,16 @@
     "prettier"
   ],
   "plugins": ["import", "jest", "jsdoc", "promise", "sort-keys-fix"],
-  "rules": {},
-  "settings": {}
+  "rules": {
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "import/no-unresolved": "off",
+    "no-use-before-define": "off",
+    "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }],
+    "react/require-default-props": [
+      "error",
+      {
+        "ignoreFunctionalComponents": true
+      }
+    ]
+  }
 }
