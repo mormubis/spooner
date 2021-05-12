@@ -5,8 +5,8 @@ import ue from '@testing-library/user-event';
 import useProxy from '@/use/proxy';
 
 type Props = {
-  onChange?: () => void;
   initialValue?: Record<string, unknown>;
+  onChange?: () => void;
 };
 
 const UseProxy = ({ initialValue = {}, onChange = () => {} }: Props) => {
@@ -211,6 +211,33 @@ describe('useProxy', () => {
     ue.click(values);
 
     expect(value.value).toBe('{"hello":"world"}');
+
+    // write key "some-key" with "some-value"
+    ue.type(key, 'some-key');
+    ue.clear(value);
+    ue.type(value, '"some-value"');
+    ue.click(set);
+
+    // read final state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hello":"world","some-key":"some-value"}');
+  });
+
+  it('updates proxy value', () => {
+    const { getByTestId, rerender } = render(<UseProxy initialValue={{ hola: 'mundo' }} />);
+
+    const key = getByTestId('key') as HTMLInputElement;
+    const value = getByTestId('value') as HTMLInputElement;
+    const set = getByTestId('set');
+    const values = getByTestId('values');
+
+    // read initial state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hola":"mundo"}');
+
+    rerender(<UseProxy initialValue={{ hello: 'world' }} />);
 
     // write key "some-key" with "some-value"
     ue.type(key, 'some-key');

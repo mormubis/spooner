@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 
 type Props<T> = {
   onChange?: (after: ProxyTarget<T>) => void;
@@ -13,7 +13,11 @@ type Proxy<T> = {
 type ProxyTarget<T> = Record<string, T>;
 
 export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> = {}): Proxy<T> => {
-  const target = useRef(initialValue);
+  const target = useRef({ ...initialValue });
+
+  const prevValue = useRef({ ...initialValue });
+
+  const mounted = useRef(false);
 
   const getter = useCallback((key: string) => target.current[key], [target]);
 
@@ -23,7 +27,7 @@ export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> =
     (key: string, after: T) => {
       const before = getter(key);
 
-      if (JSON.stringify(after) !== JSON.stringify(before)) {
+      if (mounted.current && JSON.stringify(after) !== JSON.stringify(before)) {
         target.current[key] = after;
 
         onChange(value());
@@ -36,7 +40,7 @@ export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> =
     (key: string) => {
       const before = getter(key);
 
-      if (before !== undefined) {
+      if (mounted && before !== undefined) {
         delete target.current[key];
 
         onChange(value());
@@ -44,6 +48,23 @@ export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> =
     },
     [onChange, target, value],
   );
+
+  useLayoutEffect(() => {
+    if (JSON.stringify(initialValue) !== JSON.stringify(prevValue.current)) {
+      prevValue.current = { ...initialValue };
+      target.current = { ...initialValue };
+    }
+  }, [initialValue]);
+
+  useLayoutEffect(() => {
+    // componentDidMount
+    mounted.current = true;
+
+    return () => {
+      // componentWillUnmount
+      mounted.current = false;
+    };
+  }, []);
 
   return useMemo(
     () => ({
