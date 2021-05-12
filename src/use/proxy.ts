@@ -1,18 +1,18 @@
 import { useCallback, useMemo, useRef } from 'react';
 
 type Props<T> = {
-  onChange?: (after: Value<T>) => void;
-  value?: Value<T>;
+  onChange?: (after: ProxyTarget<T>) => void;
+  value?: ProxyTarget<T>;
 };
-type Return<T> = {
+type Proxy<T> = {
   get: (key: string) => T;
   set: (key: string, value: T) => void;
   unset: (key: string) => void;
-  value: () => Value<T>;
+  value: () => ProxyTarget<T>;
 };
-type Value<T> = Record<string, T>;
+type ProxyTarget<T> = Record<string, T>;
 
-export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> = {}): Return<T> => {
+export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> = {}): Proxy<T> => {
   const target = useRef(initialValue);
 
   const getter = useCallback((key: string) => target.current[key], [target]);
