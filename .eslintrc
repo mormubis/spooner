@@ -9,11 +9,10 @@
     "plugin:import/typescript",
     "eslint:recommended",
     "airbnb",
-    "plugin:jsdoc/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["import", "jsdoc", "promise", "sort-keys-fix"],
+  "plugins": ["import", "promise", "sort-keys-fix"],
   "rules": {
     "@typescript-eslint/no-empty-function": [
       "error",
@@ -30,6 +29,11 @@
       }
     ],
     "@typescript-eslint/no-use-before-define": ["error"],
+    "import/extensions": [
+      "error",
+      "always",
+      { "js": "never", "jsx": "never", "ts": "never", "tsx": "never" }
+    ],
     "import/no-unresolved": "off",
     "no-empty-function": "off",
     "no-use-before-define": "off",
@@ -41,5 +45,11 @@
       }
     ]
   },
-  "settings": {}
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  }
 }
