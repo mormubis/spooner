@@ -3,37 +3,30 @@ import { useCallback, useMemo } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { mapValues, merge } from 'lodash';
 
-import { Error } from '@/error.d';
-import { Value } from '@/value.d';
+import type { Error } from '@/error.d';
+import type { Field } from '@/field.d';
+import type { Collection, Value } from '@/value.d';
 
 import useProxy from './proxy';
 
-type Pair<T extends Value> = {
-  error: Error<T>;
-  value: T;
-};
-
-type Props<T extends Record<string, Value>> = {
+type Props<T extends Collection> = {
   error?: Error<T>;
   onChange?: (after: T) => void;
   value?: T;
 };
 
 type Set = {
-  get: (key: string) => Pair<Value>;
+  get: (key: string) => Field<Value>;
   set: (key: string, value: Value) => void;
   unset: (key: string) => void;
-  value: () => Record<string, Pair<Value>>;
+  value: () => Record<string, Field<Value>>;
 };
 
-function split(values: Record<string, Pair<Value>>): Record<string, Value> {
+function split(values: Record<string, Field<Value>>): Collection {
   return mapValues(values, (v) => v.value);
 }
 
-function join<T extends Record<string, Value>>(
-  values: T,
-  errors: Error<T>,
-): Record<string, Pair<Value>> {
+function join<T extends Collection>(values: T, errors: Error<T>): Record<string, Field<Value>> {
   return merge(
     mapValues(values, (v) => ({ value: v })),
     mapValues(errors, (e) => ({ error: e })),
@@ -44,9 +37,9 @@ export default ({
   error: initialError = {},
   onChange = () => {},
   value: initialValue = {},
-}: Props<Record<string, Value>> = {}): Set => {
+}: Props<Collection> = {}): Set => {
   const handleChange = useCallback(
-    (value: Record<string, Pair<Value>>) => {
+    (value: Record<string, Field<Value>>) => {
       const current = split(value);
 
       onChange(current);
@@ -55,7 +48,7 @@ export default ({
   );
 
   const initial = useMemo(() => join(initialValue, initialError), [initialError, initialValue]);
-  const proxy = useProxy<Pair<Value>>({ onChange: handleChange, value: initial });
+  const proxy = useProxy<Field<Value>>({ onChange: handleChange, value: initial });
 
   const setter = useCallback(
     (key: string, value: Value) => {
