@@ -81,7 +81,7 @@ const UseSet = ({ initialError = {}, initialValue = {}, onChange = () => {} }: P
 
 describe('useSet', () => {
   it('store some value', () => {
-    const { getByTestId } = render(<UseSet />);
+    const { getByTestId } = render(<UseSet initialError={{ hello: 'world' }} initialValue={{}} />);
 
     const key = getByTestId('key') as HTMLInputElement;
     const value = getByTestId('value') as HTMLInputElement;
