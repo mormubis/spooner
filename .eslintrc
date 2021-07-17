@@ -38,12 +38,8 @@
     "no-empty-function": "off",
     "no-use-before-define": "off",
     "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }],
-    "react/require-default-props": [
-      "error",
-      {
-        "ignoreFunctionalComponents": true
-      }
-    ]
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off"
   },
   "settings": {
     "import/resolver": {
