@@ -1,15 +1,17 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 
 type Props<T> = {
-  onChange?: (after: ProxyTarget<T>) => void;
+  onChange?: (after: ProxyTarget<T>, before: ProxyTarget<T>) => void;
   value?: ProxyTarget<T>;
 };
+
 type Proxy<T> = {
   get: (key: string) => T;
   set: (key: string, value: T) => void;
   unset: (key: string) => void;
   value: () => ProxyTarget<T>;
 };
+
 type ProxyTarget<T> = Record<string, T>;
 
 export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> = {}): Proxy<T> => {
@@ -30,7 +32,7 @@ export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> =
       if (mounted.current && JSON.stringify(after) !== JSON.stringify(before)) {
         target.current[key] = after;
 
-        onChange(value());
+        onChange(value(), prevValue.current);
       }
     },
     [onChange, target, value],
@@ -43,7 +45,7 @@ export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> =
       if (mounted && before !== undefined) {
         delete target.current[key];
 
-        onChange(value());
+        onChange(value(), prevValue.current);
       }
     },
     [onChange, target, value],

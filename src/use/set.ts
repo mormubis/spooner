@@ -11,7 +11,7 @@ import useProxy from './proxy';
 
 type Props<T extends Collection> = {
   error?: Error<T>;
-  onChange?: (after: T) => void;
+  onChange?: (after: T, before: T) => void;
   value?: T;
 };
 
@@ -39,10 +39,11 @@ export default ({
   value: initialValue = {},
 }: Props<Collection> = {}): Set => {
   const handleChange = useCallback(
-    (value: Record<string, Field<Value>>) => {
-      const current = split(value);
+    (after: Record<string, Field<Value>>, before: Record<string, Field<Value>>) => {
+      const current = split(after);
+      const previous = split(before);
 
-      onChange(current);
+      onChange(current, previous);
     },
     [onChange],
   );
