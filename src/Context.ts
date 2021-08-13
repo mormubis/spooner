@@ -1,15 +1,10 @@
 import { createContext } from 'react';
 
-import type { Error } from '@/error.d';
-import type { Value } from '@/value.d';
+import type { Set } from './use/set';
 
-export type Type = {
-  get: <T extends Value>(key: string) => { error: Error<T>; value: T };
-  set: (key: string, value: Value) => void;
-  unset: (key: string) => void;
-};
+export type FormContext = Omit<Set, 'value'>;
 
-export default createContext<Type>({
+export default createContext<FormContext>({
   get<T>() {
     return { error: undefined, value: undefined as unknown as T };
   },

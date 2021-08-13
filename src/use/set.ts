@@ -15,7 +15,7 @@ type Props<T extends Collection> = {
   value?: T;
 };
 
-type Set = {
+export type Set = {
   get: (key: string) => Field<Value>;
   set: (key: string, value: Value) => void;
   unset: (key: string) => void;
