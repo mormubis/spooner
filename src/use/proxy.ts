@@ -30,9 +30,13 @@ export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> =
       const before = getter(key);
 
       if (mounted.current && JSON.stringify(after) !== JSON.stringify(before)) {
+        const previous = { ...value() };
+
         target.current[key] = after;
 
-        onChange(value(), prevValue.current);
+        const next = { ...value() };
+
+        onChange(next, previous);
       }
     },
     [onChange, target, value],
@@ -43,9 +47,13 @@ export default <T>({ onChange = () => {}, value: initialValue = {} }: Props<T> =
       const before = getter(key);
 
       if (mounted && before !== undefined) {
+        const previous = { ...value() };
+
         delete target.current[key];
 
-        onChange(value(), prevValue.current);
+        const next = { ...value() };
+
+        onChange(next, previous);
       }
     },
     [onChange, target, value],

@@ -1,15 +1,15 @@
 import React, { memo } from 'react';
 // import PropTypes from 'prop-types';
 
+import { Value } from '@/value.d';
+
 import Context from './Context';
 
-import type { Props as FieldProps, Return } from './use/field';
+import type { Props as FieldProps, FieldContext } from './use/field';
 import useField from './use/field';
 
-import { Value } from './value.d';
-
 type Props<T extends Value> = FieldProps<T> & {
-  children: ({ change, error, value }: Return<T>) => React.ReactNode;
+  children?: ({ change, error, value }: FieldContext<T>) => React.ReactNode;
 };
 
 const { Provider } = Context;
@@ -38,14 +38,19 @@ const Field = <T extends Value>({ children = () => null, ...input }: Props<T>) =
 
 // Field.propTypes = {
 //   children: PropTypes.func,
-//   error: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-//   isolate: PropTypes.bool,
+//   error: PropTypes.oneOfType([PropTypes.array, PropTypes.object, PropTypes.string]),
 //   name: PropTypes.string.isRequired,
 //   onChange: PropTypes.func,
 //   onInvalid: PropTypes.func,
-//   value: PropTypes.any,
+//   value: PropTypes.oneOfType([
+//     PropTypes.array,
+//     PropTypes.bool,
+//     PropTypes.number,
+//     PropTypes.object,
+//     PropTypes.string,
+//   ]),
 // };
 
 export { useField };
 
-export default memo(Field);
+export default memo(Field) as typeof Field;

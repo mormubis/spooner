@@ -140,7 +140,7 @@ describe('useProxy', () => {
 
     expect(key.value).toBe('some-key');
     expect(value.value).toBe('"some-value"');
-    expect(onChange).toHaveBeenCalledWith({ 'some-key': 'some-value' });
+    expect(onChange).toHaveBeenCalledWith({ 'some-key': 'some-value' }, {});
 
     // write key "other-key" with "other-value"
     ue.clear(key);
@@ -151,7 +151,10 @@ describe('useProxy', () => {
 
     expect(key.value).toBe('other-key');
     expect(value.value).toBe('"other-value"');
-    expect(onChange).toHaveBeenCalledWith({ 'other-key': 'other-value', 'some-key': 'some-value' });
+    expect(onChange).toHaveBeenLastCalledWith(
+      { 'other-key': 'other-value', 'some-key': 'some-value' },
+      { 'some-key': 'some-value' },
+    );
 
     // write AGAIn key "some-key" with "some-value"
     ue.clear(key);
