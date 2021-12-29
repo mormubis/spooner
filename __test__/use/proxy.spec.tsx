@@ -5,15 +5,20 @@ import ue from '@testing-library/user-event';
 import useProxy from '@/use/proxy';
 
 type Props = {
-  initialValue?: Record<string, unknown>;
+  controlledValue?: Record<string, unknown>;
   onChange?: () => void;
+  uncontrolledValue?: Record<string, unknown>;
 };
 
-const UseProxy = ({ initialValue = {}, onChange = () => {} }: Props) => {
+const UseProxy = ({
+  controlledValue = undefined,
+  onChange = () => {},
+  uncontrolledValue = undefined,
+}: Props) => {
   const [key, setKey] = useState('');
   const [value, setValue] = useState('');
 
-  const proxy = useProxy({ onChange, value: initialValue });
+  const proxy = useProxy({ defaultValue: uncontrolledValue, onChange, value: controlledValue });
 
   const get = useCallback(() => {
     setValue(JSON.stringify(proxy.get(key)) ?? 'undefined');
@@ -125,6 +130,7 @@ describe('useProxy', () => {
     const value = getByTestId('value') as HTMLInputElement;
     const get = getByTestId('get');
     const set = getByTestId('set');
+    const unset = getByTestId('unset');
 
     // read key "some-key"
     ue.type(key, 'some-key');
@@ -164,6 +170,13 @@ describe('useProxy', () => {
     ue.click(set);
 
     expect(onChange).toHaveBeenCalledTimes(2);
+
+    ue.click(unset);
+
+    expect(onChange).toHaveBeenLastCalledWith(
+      { 'other-key': 'other-value' },
+      { 'other-key': 'other-value', 'some-key': 'some-value' },
+    );
   });
 
   it('remove some key', () => {
@@ -202,8 +215,33 @@ describe('useProxy', () => {
     expect(value.value).toBe('undefined');
   });
 
-  it('retrieve proxy value', () => {
-    const { getByTestId } = render(<UseProxy initialValue={{ hello: 'world' }} />);
+  it('retrieve proxy value (controlled)', () => {
+    const { getByTestId } = render(<UseProxy controlledValue={{ hello: 'world' }} />);
+
+    const key = getByTestId('key') as HTMLInputElement;
+    const value = getByTestId('value') as HTMLInputElement;
+    const set = getByTestId('set');
+    const values = getByTestId('values');
+
+    // read initial state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hello":"world"}');
+
+    // write key "some-key" with "some-value"
+    ue.type(key, 'some-key');
+    ue.clear(value);
+    ue.type(value, '"some-value"');
+    ue.click(set);
+
+    // read final state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hello":"world"}');
+  });
+
+  it('retrieve proxy value (uncontrolled)', () => {
+    const { getByTestId } = render(<UseProxy uncontrolledValue={{ hello: 'world' }} />);
 
     const key = getByTestId('key') as HTMLInputElement;
     const value = getByTestId('value') as HTMLInputElement;
@@ -228,7 +266,7 @@ describe('useProxy', () => {
   });
 
   it('updates proxy value', () => {
-    const { getByTestId, rerender } = render(<UseProxy initialValue={{ hola: 'mundo' }} />);
+    const { getByTestId, rerender } = render(<UseProxy controlledValue={{ hola: 'mundo' }} />);
 
     const key = getByTestId('key') as HTMLInputElement;
     const value = getByTestId('value') as HTMLInputElement;
@@ -240,7 +278,7 @@ describe('useProxy', () => {
 
     expect(value.value).toBe('{"hola":"mundo"}');
 
-    rerender(<UseProxy initialValue={{ hello: 'world' }} />);
+    rerender(<UseProxy controlledValue={{ hello: 'world' }} />);
 
     // write key "some-key" with "some-value"
     ue.type(key, 'some-key');
@@ -248,7 +286,70 @@ describe('useProxy', () => {
     ue.type(value, '"some-value"');
     ue.click(set);
 
+    rerender(<UseProxy controlledValue={{ hello: 'world' }} />);
+
     // read final state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hello":"world"}');
+  });
+
+  it('no updates proxy uncontrolled value', () => {
+    const { getByTestId, rerender } = render(<UseProxy uncontrolledValue={{ hola: 'mundo' }} />);
+
+    const key = getByTestId('key') as HTMLInputElement;
+    const value = getByTestId('value') as HTMLInputElement;
+    const set = getByTestId('set');
+    const values = getByTestId('values');
+
+    // read initial state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hola":"mundo"}');
+
+    rerender(<UseProxy uncontrolledValue={{ hello: 'world' }} />);
+
+    // write key "some-key" with "some-value"
+    ue.type(key, 'some-key');
+    ue.clear(value);
+    ue.type(value, '"some-value"');
+    ue.click(set);
+
+    rerender(<UseProxy uncontrolledValue={{ hello: 'world' }} />);
+
+    // read final state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hola":"mundo","some-key":"some-value"}');
+  });
+
+  it('controlled to uncontrolled value', () => {
+    const { getByTestId, rerender } = render(
+      <UseProxy controlledValue={{ hola: 'mundo' }} uncontrolledValue={{ hello: 'world' }} />,
+    );
+
+    const key = getByTestId('key') as HTMLInputElement;
+    const value = getByTestId('value') as HTMLInputElement;
+    const set = getByTestId('set');
+    const values = getByTestId('values');
+
+    // read initial state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hola":"mundo"}');
+
+    rerender(<UseProxy uncontrolledValue={{ hello: 'world' }} />);
+
+    ue.click(values);
+
+    expect(value.value).toBe('{"hello":"world"}');
+
+    // write key "some-key" with "some-value"
+    ue.type(key, 'some-key');
+    ue.clear(value);
+    ue.type(value, '"some-value"');
+    ue.click(set);
+
     ue.click(values);
 
     expect(value.value).toBe('{"hello":"world","some-key":"some-value"}');

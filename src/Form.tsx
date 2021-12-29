@@ -15,8 +15,8 @@ import useSet from './use/set';
 
 const { Provider } = Context;
 
-type OwnProps = FieldProps<Collection> & {
-  error: Error<Collection>;
+type OwnProps = Omit<FieldProps<Collection>, 'name'> & {
+  error?: Error<Collection>;
   onSubmit?: (value: Collection) => void;
 };
 

@@ -23,7 +23,7 @@ export type FieldContext<T extends Value> = Field<T> & {
 
 export default <T extends Value>({ name, ...props }: Props<T>): FieldContext<T> => {
   const form = useForm();
-  const context = form.get<T>(name);
+  const context = (form.get(name) ?? {}) as Field<T>;
 
   const {
     error,

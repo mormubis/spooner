@@ -16,23 +16,22 @@ const Select = ({ children, forwardedRef = createRef(), ...input }) => {
 
   const element = useRef(null);
 
-  const getOption = needle => {
+  const getOption = (needle) => {
     const options = [...element.current.options];
 
     return (
-      options.find(({ value: option }) => option === needle) ||
-      (multiple ? undefined : options[0])
+      options.find(({ value: option }) => option === needle) || (multiple ? undefined : options[0])
     );
   };
 
-  const getValue = raw => {
+  const getValue = (raw) => {
     const options = [...element.current.options];
     const rvalue = Array.isArray(raw) ? raw : [raw];
 
     let selected = rvalue
-      .map(item => getOption(item))
+      .map((item) => getOption(item))
       .filter(Boolean)
-      .map(option => option.value);
+      .map((option) => option.value);
 
     if (selected.length === 0 && !multiple) {
       const initial = options[0] || {};
@@ -47,12 +46,12 @@ const Select = ({ children, forwardedRef = createRef(), ...input }) => {
     onBlur();
   };
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const { selectedOptions } = event.target;
 
     event.stopPropagation();
 
-    const raw = [...selectedOptions].map(option => option.value);
+    const raw = [...selectedOptions].map((option) => option.value);
     const after = getValue(raw);
 
     onChange(after);
@@ -80,7 +79,7 @@ const Select = ({ children, forwardedRef = createRef(), ...input }) => {
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
-      ref={node => {
+      ref={(node) => {
         element.current = node;
         // eslint-disable-next-line no-param-reassign
         forwardedRef.current = node;
@@ -93,10 +92,7 @@ const Select = ({ children, forwardedRef = createRef(), ...input }) => {
 };
 
 Select.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   error: PropTypes.string,
   forwardedRef: PropTypes.oneOfType([
     PropTypes.func,
@@ -109,6 +105,4 @@ Select.propTypes = {
   type: PropTypes.string,
 };
 
-export default forwardRef((props, ref) => (
-  <Select {...props} forwardedRef={ref} />
-));
+export default forwardRef((props, ref) => <Select {...props} forwardedRef={ref} />);

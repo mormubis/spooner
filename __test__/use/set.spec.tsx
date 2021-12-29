@@ -16,7 +16,7 @@ const UseSet = ({ initialError = {}, initialValue = {}, onChange = () => {} }: P
   const [key, setKey] = useState('');
   const [value, setValue] = useState('');
 
-  const proxy = useSet({ error: initialError, onChange, value: initialValue });
+  const proxy = useSet({ defaultError: initialError, onChange, defaultValue: initialValue });
 
   const get = useCallback(() => {
     setValue(JSON.stringify(proxy.get(key)) ?? 'undefined');
@@ -232,7 +232,7 @@ describe('useSet', () => {
     expect(value.value).toBe('undefined');
   });
 
-  it('retrieve proxy value', () => {
+  it('retrieve set value', () => {
     const { getByTestId } = render(<UseSet initialValue={{ hello: 'world' }} />);
 
     const key = getByTestId('key') as HTMLInputElement;
@@ -250,6 +250,35 @@ describe('useSet', () => {
     ue.clear(value);
     ue.type(value, '"some-value"');
     ue.click(set);
+
+    // read final state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hello":{"value":"world"},"some-key":{"value":"some-value"}}');
+  });
+
+  it('updates set value', () => {
+    const { getByTestId, rerender } = render(<UseSet initialValue={{ hello: 'world' }} />);
+
+    const key = getByTestId('key') as HTMLInputElement;
+    const value = getByTestId('value') as HTMLInputElement;
+    const set = getByTestId('set');
+    const values = getByTestId('values');
+
+    // read initial state
+    ue.click(values);
+
+    expect(value.value).toBe('{"hello":{"value":"world"}}');
+
+    rerender(<UseSet initialValue={{ hello: 'world' }} />);
+
+    // write key "some-key" with "some-value"
+    ue.type(key, 'some-key');
+    ue.clear(value);
+    ue.type(value, '"some-value"');
+    ue.click(set);
+
+    rerender(<UseSet initialValue={{ hello: 'world' }} />);
 
     // read final state
     ue.click(values);

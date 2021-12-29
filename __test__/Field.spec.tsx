@@ -4,7 +4,7 @@ import ue from '@testing-library/user-event';
 
 import Field from '@/Field';
 
-describe('Field', () => {
+describe('<Field />', () => {
   it('exports useField hook', () => {
     const fn = jest.fn(() => null);
     render(<Field name="test">{fn}</Field>);
@@ -25,7 +25,9 @@ describe('Field', () => {
   it('sets default value', () => {
     const { getByRole } = render(
       <Field<string> name="test" defaultValue="hello">
-        {({ value }) => <input type="text" value={value} />}
+        {({ change, value }) => (
+          <input type="text" onChange={(e) => change(e.target.value)} value={value} />
+        )}
       </Field>,
     );
 
@@ -35,9 +37,12 @@ describe('Field', () => {
   });
 
   it('sets value', () => {
+    const onChange = jest.fn();
     const { getByRole } = render(
-      <Field<string> name="test" value="hola">
-        {({ value }) => <input type="text" value={value} />}
+      <Field<string> name="test" onChange={onChange} value="hola">
+        {({ change, value }) => (
+          <input type="text" onChange={(e) => change(e.target.value)} value={value} />
+        )}
       </Field>,
     );
 
@@ -47,9 +52,12 @@ describe('Field', () => {
   });
 
   it('sets value over defaultValue', () => {
+    const onChange = jest.fn();
     const { getByRole } = render(
-      <Field<string> defaultValue="hello" name="test" value="hola">
-        {({ value }) => <input type="text" value={value} />}
+      <Field<string> defaultValue="hello" name="test" onChange={onChange} value="hola">
+        {({ change, value }) => (
+          <input type="text" onChange={(e) => change(e.target.value)} value={value} />
+        )}
       </Field>,
     );
 

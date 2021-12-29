@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import { useField } from '../Field';
 
-const File = ({ forwardedRef, ...input }) => {
+const Radio = forwardRef(({ content, ...input }, ref: React.Ref<HTMLInputElement>) => {
   const {
     error,
-    multiple = false,
     onBlur = () => {},
     onChange = () => {},
     onFocus = () => {},
+    value,
     ...props
   } = useField(input);
 
@@ -17,12 +17,12 @@ const File = ({ forwardedRef, ...input }) => {
     onBlur();
   };
 
-  const handleChange = event => {
-    const { files } = event.target;
+  const handleChange = (event) => {
+    const { checked } = event.target;
 
     event.stopPropagation();
 
-    onChange(multiple ? files : files[0]);
+    onChange(checked ? content : value);
   };
 
   const handleFocus = () => {
@@ -32,30 +32,24 @@ const File = ({ forwardedRef, ...input }) => {
   return (
     <input
       {...props}
+      checked={content === value}
+      data-checked={content === value}
       data-error={!!error}
-      data-multiple={multiple}
+      data-value={value}
       onBlur={handleBlur}
       onChange={handleChange}
       onFocus={handleFocus}
-      ref={forwardedRef}
-      type="file"
+      ref={ref}
+      type="radio"
     />
   );
-};
+});
 
-File.propTypes = {
+Radio.propTypes = {
+  content: PropTypes.string,
   error: PropTypes.string,
-  forwardedRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
-  ]),
-  multiple: PropTypes.bool,
-  onBlur: PropTypes.func,
   onChange: PropTypes.func,
-  onFocus: PropTypes.func,
   type: PropTypes.string,
 };
 
-export default forwardRef((props, ref) => (
-  <File {...props} forwardedRef={ref} />
-));
+export default Radio;

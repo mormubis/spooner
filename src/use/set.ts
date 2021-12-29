@@ -10,6 +10,8 @@ import type { Collection, Value } from '@/value.d';
 import useProxy from './proxy';
 
 type Props<T extends Collection> = {
+  defaultError?: Error<T>;
+  defaultValue?: T;
   error?: Error<T>;
   onChange?: (after: T, before: T) => void;
   value?: T;
@@ -34,9 +36,11 @@ function join<T extends Collection>(values: T, errors: Error<T>): Record<string,
 }
 
 export default ({
-  error: initialError = {},
+  defaultError = {},
+  defaultValue = {},
+  error,
   onChange = () => {},
-  value: initialValue = {},
+  value,
 }: Props<Collection> = {}): Set => {
   const handleChange = useCallback(
     (after: Record<string, Field<Value>>, before: Record<string, Field<Value>>) => {
@@ -48,12 +52,25 @@ export default ({
     [onChange],
   );
 
-  const initial = useMemo(() => join(initialValue, initialError), [initialError, initialValue]);
-  const proxy = useProxy<Field<Value>>({ onChange: handleChange, value: initial });
+  const defaults = useMemo(
+    () => join(defaultValue, defaultError),
+    [JSON.stringify(defaultError), JSON.stringify(defaultValue)],
+  );
+
+  const initial = useMemo(
+    () => (value || error) && join(value ?? {}, error ?? {}),
+    [JSON.stringify(error), JSON.stringify(value)],
+  );
+
+  const proxy = useProxy<Field<Value>>({
+    defaultValue: defaults,
+    onChange: handleChange,
+    value: initial,
+  });
 
   const setter = useCallback(
-    (key: string, value: Value) => {
-      proxy.set(key, { error: undefined, value });
+    (key: string, after: Value) => {
+      proxy.set(key, { error: undefined, value: after });
     },
     [proxy],
   );

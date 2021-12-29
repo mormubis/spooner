@@ -37,7 +37,6 @@ const Field = <T extends Value>({ children = () => null, ...input }: Props<T>) =
 };
 
 // Field.propTypes = {
-//   children: PropTypes.func,
 //   error: PropTypes.oneOfType([PropTypes.array, PropTypes.object, PropTypes.string]),
 //   name: PropTypes.string.isRequired,
 //   onChange: PropTypes.func,
@@ -50,7 +49,5 @@ const Field = <T extends Value>({ children = () => null, ...input }: Props<T>) =
 //     PropTypes.string,
 //   ]),
 // };
-
-export { useField };
 
 export default memo(Field) as typeof Field;
